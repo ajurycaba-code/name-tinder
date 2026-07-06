@@ -10,8 +10,8 @@ celular e comparar os favoritos.
 
 - **Swipe estilo Tinder**: arraste o card ou use os botões ❤️ / ✕. Cada nome traz origem,
   significado e uma curiosidade/estatística.
-- **~300 nomes populares no Brasil** (150 femininos + 144 masculinos), com filtro por
-  Meninas / Meninos / Todos.
+- **~600 nomes** (quase 300 populares no Brasil + mais de 300 populares nos EUA e em alta ao
+  redor do mundo), intercalados no baralho, com filtro por Meninas / Meninos / Todos.
 - **Dois perfis** (Fabiana e Aju) — cada um guarda suas próprias decisões no navegador.
 - **Matches**: tela que mostra só os nomes que os dois curtiram, com estatísticas de quantos
   cada um já avaliou/curtiu.
@@ -44,6 +44,11 @@ Gera arquivos estáticos em `dist/`, prontos para publicar em qualquer hospedage
 
 ## Sobre os dados dos nomes
 
-A lista de nomes (`src/data/names.ts`) foi montada com base em nomes historicamente
-populares no Brasil (Censo IBGE e registros civis recentes) e tendências de nascimentos dos
-últimos anos. A ordem exibida é aproximada/ilustrativa, não uma classificação oficial exata.
+A lista de nomes (`src/data/names.ts`) combina duas fontes:
+
+- Nomes historicamente populares no Brasil (Censo IBGE e registros civis recentes);
+- Nomes populares nos Estados Unidos (ranking anual da Social Security Administration) e
+  nomes em alta ao redor do mundo nos últimos anos.
+
+Nomes repetidos entre as duas listas (mesmo nome e gênero) aparecem só uma vez, e a ordem
+exibida é aproximada/ilustrativa, não uma classificação oficial exata.

@@ -9,6 +9,7 @@ export interface NameEntry {
   meaning: string
   fact: string
   custom?: boolean
+  bicultural?: boolean
 }
 
 // Lista curada com nomes historicamente populares no Brasil (base IBGE - Censo 2022 e
@@ -660,24 +661,133 @@ const internationalNames = [...build(FEMALE_INTL, 'F'), ...build(MALE_INTL, 'M')
 const brazilianIds = new Set(brazilianNames.map((n) => n.id))
 const dedupedInternational = internationalNames.filter((n) => !brazilianIds.has(n.id))
 
-// Intercala nomes brasileiros com internacionais (mantendo a ordem relativa de cada lista),
-// para que os nomes novos apareçam ao longo de todo o baralho, não só no final. Também
-// renumera o rank de forma sequencial e única por gênero, já que as duas listas de origem
-// numeravam a partir de 1 independentemente uma da outra.
-function interleaveAndRenumber(listA: NameEntry[], listB: NameEntry[]): NameEntry[] {
+// --- Nomes compostos biculturais ---
+// Cada par combina um nome com "cara" brasileira com um nome com "cara" americana, pra dar
+// duas formas de chamar a mesma pessoa: uma no Brasil, outra nos Estados Unidos. As
+// definições (origem/significado) de cada metade são reaproveitadas das listas já montadas
+// acima, pra manter consistência e não duplicar conteúdo.
+type BiculturalPair = [gender: Gender, brName: string, usName: string]
+
+const BICULTURAL_PAIRS: BiculturalPair[] = [
+  ['F', 'Heloísa', 'Grace'],
+  ['F', 'Manuela', 'Charlotte'],
+  ['F', 'Luiza', 'Harper'],
+  ['F', 'Beatriz', 'Scarlett'],
+  ['F', 'Larissa', 'Willow'],
+  ['F', 'Giovanna', 'Nora'],
+  ['F', 'Isadora', 'Hazel'],
+  ['F', 'Cecília', 'Ivy'],
+  ['F', 'Yasmin', 'Piper'],
+  ['F', 'Rafaela', 'Quinn'],
+  ['F', 'Antonella', 'Wren'],
+  ['F', 'Catarina', 'Everly'],
+  ['F', 'Bianca', 'Georgia'],
+  ['F', 'Mariana', 'Freya'],
+  ['F', 'Fernanda', 'Maeve'],
+  ['F', 'Camila', 'Ruby'],
+  ['F', 'Juliana', 'Iris'],
+  ['F', 'Marina', 'Josephine'],
+  ['F', 'Analu', 'Stella'],
+  ['F', 'Maitê', 'Faith'],
+  ['F', 'Pietra', 'Violet'],
+  ['F', 'Agatha', 'Daisy'],
+  ['F', 'Milena', 'Cora'],
+  ['F', 'Lorena', 'Adeline'],
+  ['F', 'Isabela', 'Mackenzie'],
+  ['F', 'Alice', 'Peyton'],
+  ['F', 'Gabriela', 'Riley'],
+  ['F', 'Letícia', 'Reagan'],
+  ['F', 'Amanda', 'Presley'],
+  ['F', 'Bruna', 'Blakely'],
+  ['F', 'Patrícia', 'Kinsley'],
+  ['F', 'Adriana', 'Marley'],
+  ['F', 'Vitória', 'Sadie'],
+  ['F', 'Natália', 'Aubrey'],
+  ['F', 'Priscila', 'Everleigh'],
+  ['F', 'Carolina', 'Josie'],
+  ['M', 'Heitor', 'William'],
+  ['M', 'Cauã', 'Grayson'],
+  ['M', 'Bento', 'Hudson'],
+  ['M', 'Theo', 'Everett'],
+  ['M', 'Joaquim', 'Wyatt'],
+  ['M', 'Vinícius', 'Jackson'],
+  ['M', 'Murilo', 'Carter'],
+  ['M', 'Caio', 'Mason'],
+  ['M', 'Gustavo', 'Owen'],
+  ['M', 'Guilherme', 'Lincoln'],
+  ['M', 'Rodrigo', 'Cooper'],
+  ['M', 'Leonardo', 'Weston'],
+  ['M', 'Felipe', 'Beckett'],
+  ['M', 'Eduardo', 'Archer'],
+  ['M', 'Marcelo', 'Sawyer'],
+  ['M', 'Thiago', 'Cash'],
+  ['M', 'Matheus', 'Rhett'],
+  ['M', 'Danilo', 'Finn'],
+  ['M', 'Breno', 'Jasper'],
+  ['M', 'Otto', 'Declan'],
+  ['M', 'Valentim', 'Zane'],
+  ['M', 'Estêvão', 'Arlo'],
+  ['M', 'Diogo', 'Bodhi'],
+  ['M', 'Fabrício', 'Knox'],
+  ['M', 'Kaique', 'Sterling'],
+  ['M', 'Leandro', 'Ashton'],
+  ['M', 'Vicente', 'Dean'],
+  ['M', 'Emanuel', 'Elliot'],
+  ['M', 'Cauê', 'Felix'],
+  ['M', 'Caetano', 'Grady'],
+  ['M', 'Diego', 'Holden'],
+  ['M', 'Enzo', 'Nash'],
+  ['M', 'Bernardo', 'Oscar'],
+  ['M', 'Davi', 'Reid'],
+  ['M', 'Samuel', 'Titus'],
+  ['M', 'Rafael', 'Wade'],
+]
+
+const individualById = new Map<string, NameEntry>([...brazilianNames, ...internationalNames].map((n) => [n.id, n]))
+
+function buildBicultural(pairs: BiculturalPair[]): NameEntry[] {
+  const result: NameEntry[] = []
+  for (const [gender, brName, usName] of pairs) {
+    const brEntry = individualById.get(`${gender.toLowerCase()}-${slugify(brName)}`)
+    const usEntry = individualById.get(`${gender.toLowerCase()}-${slugify(usName)}`)
+    if (!brEntry || !usEntry) continue // segurança: ignora pares com nomes que não existem nas listas base
+
+    result.push({
+      id: `bicultural-${gender.toLowerCase()}-${slugify(brName)}-${slugify(usName)}`,
+      name: `${brName} ${usName}`,
+      gender,
+      rank: 0,
+      origin: `${brEntry.origin} + ${usEntry.origin}`,
+      meaning: `${brEntry.meaning} (${brName}) + ${usEntry.meaning} (${usName})`,
+      fact: `Ideia de nome bicultural: chamem de "${brName}" no Brasil e de "${usName}" nos Estados Unidos — um único nome no registro, duas formas carinhosas de usar no dia a dia.`,
+      bicultural: true,
+    })
+  }
+  return result
+}
+
+const biculturalNames = buildBicultural(BICULTURAL_PAIRS)
+const usedIds = new Set([...brazilianIds, ...dedupedInternational.map((n) => n.id)])
+const dedupedBicultural = biculturalNames.filter((n) => !usedIds.has(n.id))
+
+// Intercala nomes brasileiros, internacionais e biculturais (mantendo a ordem relativa de
+// cada lista), para que os nomes novos apareçam ao longo de todo o baralho, não só no final.
+// Também renumera o rank de forma sequencial e única por gênero, já que cada lista de origem
+// numerava a partir de 1 independentemente das outras.
+function interleaveAndRenumber(...lists: NameEntry[][]): NameEntry[] {
   const result: NameEntry[] = []
   const genders: Gender[] = ['F', 'M']
   const counters: Record<Gender, number> = { F: 0, M: 0 }
   for (const gender of genders) {
-    const a = listA.filter((n) => n.gender === gender)
-    const b = listB.filter((n) => n.gender === gender)
-    const max = Math.max(a.length, b.length)
+    const byList = lists.map((list) => list.filter((n) => n.gender === gender))
+    const max = Math.max(0, ...byList.map((list) => list.length))
     for (let i = 0; i < max; i++) {
-      if (a[i]) result.push({ ...a[i], rank: ++counters[gender] })
-      if (b[i]) result.push({ ...b[i], rank: ++counters[gender] })
+      for (const list of byList) {
+        if (list[i]) result.push({ ...list[i], rank: ++counters[gender] })
+      }
     }
   }
   return result
 }
 
-export const BASE_NAMES: NameEntry[] = interleaveAndRenumber(brazilianNames, dedupedInternational)
+export const BASE_NAMES: NameEntry[] = interleaveAndRenumber(brazilianNames, dedupedInternational, dedupedBicultural)

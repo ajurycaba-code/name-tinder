@@ -23,6 +23,8 @@ export function NameCard({ entry, dragX = 0 }: Props) {
         {entry.custom ? ' · sugerido' : ` · #${entry.rank}`}
       </div>
 
+      {entry.bicultural && <div className="name-card-bicultural">🇧🇷 + 🇺🇸 nome bicultural</div>}
+
       <h2 className="name-card-name">{entry.name}</h2>
 
       <div className="name-card-body">

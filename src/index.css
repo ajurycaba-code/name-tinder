@@ -548,6 +548,127 @@ textarea {
   word-break: break-all;
 }
 
+/* Copa dos Nomes */
+.cup-start {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.cup-start-count {
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: var(--pink);
+  margin: 0;
+}
+
+.cup-round {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding-top: 12px;
+}
+
+.cup-round-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--muted);
+  margin: 0;
+}
+
+.versus {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  width: 100%;
+}
+
+.versus-card {
+  border: 2px solid #eadfe6;
+  background: white;
+  border-radius: 18px;
+  padding: 22px 18px;
+  text-align: left;
+  box-shadow: 0 10px 26px rgba(43, 32, 50, 0.08);
+}
+
+.versus-card:active {
+  border-color: var(--pink);
+  background: #fff5f7;
+}
+
+.versus-name {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0 0 4px;
+}
+
+.versus-meaning {
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-style: italic;
+  margin: 0;
+}
+
+.versus-divider {
+  align-self: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--purple);
+  margin: -4px 0;
+}
+
+.cup-undo {
+  width: auto;
+  padding: 0 16px;
+  border-radius: 999px;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.bye-notice {
+  text-align: center;
+  padding: 50px 20px;
+  color: var(--muted);
+}
+
+.champion-card {
+  text-align: center;
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: 0 16px 40px rgba(43, 32, 50, 0.15);
+  padding: 32px 24px;
+  margin-top: 8px;
+}
+
+.champion-trophy {
+  font-size: 3rem;
+  margin: 0 0 6px;
+}
+
+.champion-label {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--pink);
+  margin: 0 0 6px;
+}
+
+.champion-name {
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin: 0 0 14px;
+}
+
+.champion-card .name-card-fact {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
 /* Tab bar */
 .tab-bar {
   position: fixed;

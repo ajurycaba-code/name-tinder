@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { AddNameScreen } from './components/AddNameScreen'
+import { CupScreen } from './components/CupScreen'
 import { MatchesScreen } from './components/MatchesScreen'
 import { PlayerGate } from './components/PlayerGate'
 import { SwipeDeck } from './components/SwipeDeck'
@@ -91,6 +92,8 @@ export default function App() {
         {tab === 'matches' && (
           <MatchesScreen matches={matches} decisions={decisions} totalNames={allNames.length} />
         )}
+
+        {tab === 'cup' && <CupScreen matches={matches} />}
 
         {tab === 'add' && (
           <AddNameScreen onAdd={addCustomName} existingIds={new Set(allNames.map((n) => n.id))} />

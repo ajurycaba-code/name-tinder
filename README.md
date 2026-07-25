@@ -10,13 +10,16 @@ celular e comparar os favoritos.
 
 - **Swipe estilo Tinder**: arraste o card ou use os botões ❤️ / ✕. Cada nome traz origem,
   significado e uma curiosidade/estatística.
-- **~670 nomes** (quase 300 populares no Brasil + mais de 300 populares nos EUA e em alta ao
-  redor do mundo + 72 nomes compostos biculturais), intercalados no baralho, com filtro por
-  Meninas / Meninos / Todos.
+- **~700 nomes** (quase 300 populares no Brasil + mais de 300 populares nos EUA e em alta ao
+  redor do mundo + 72 nomes compostos biculturais + 30 nomes criativos exclusivos),
+  intercalados no baralho, com filtro por Meninas / Meninos / Todos.
 - **Nomes compostos biculturais**: pra quem não consegue escolher entre um nome "mais
   brasileiro" e um "mais americano", tem cards com os dois juntos (ex: "Heitor William") — dá
   pra chamar de um jeito no Brasil e de outro nos Estados Unidos, com o mesmo nome no
   registro. Esses cards aparecem com um selinho 🇧🇷 + 🇺🇸 no baralho.
+- **Nomes criativos exclusivos**: uma lista à parte inspirada nos nomes dos próprios pais —
+  variações, combinações e homenagens aos nomes e sobrenomes da família, além de nomes de
+  origem tupi-guarani. Esses cards aparecem com o selinho ✨ nome exclusivo da família.
 - **Dois perfis** (Fabiana e Aju) — cada um guarda suas próprias decisões no navegador.
 - **Matches**: tela que mostra só os nomes que os dois curtiram, com estatísticas de quantos
   cada um já avaliou/curtiu.

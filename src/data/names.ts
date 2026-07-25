@@ -10,6 +10,7 @@ export interface NameEntry {
   fact: string
   custom?: boolean
   bicultural?: boolean
+  creative?: boolean
 }
 
 // Lista curada com nomes historicamente populares no Brasil (base IBGE - Censo 2022 e
@@ -767,13 +768,61 @@ function buildBicultural(pairs: BiculturalPair[]): NameEntry[] {
 }
 
 const biculturalNames = buildBicultural(BICULTURAL_PAIRS)
-const usedIds = new Set([...brazilianIds, ...dedupedInternational.map((n) => n.id)])
-const dedupedBicultural = biculturalNames.filter((n) => !usedIds.has(n.id))
+const usedIdsAfterBicultural = new Set([...brazilianIds, ...dedupedInternational.map((n) => n.id)])
+const dedupedBicultural = biculturalNames.filter((n) => !usedIdsAfterBicultural.has(n.id))
 
-// Intercala nomes brasileiros, internacionais e biculturais (mantendo a ordem relativa de
-// cada lista), para que os nomes novos apareçam ao longo de todo o baralho, não só no final.
-// Também renumera o rank de forma sequencial e única por gênero, já que cada lista de origem
-// numerava a partir de 1 independentemente das outras.
+// --- Nomes criativos da família ---
+// Lista exclusiva inspirada nos nomes dos pais (Fabiana Ferreira de Souza e Ajurycaba Cortez
+// de Lucena Júnior): variações, combinações e homenagens aos dois nomes e sobrenomes da
+// família, além de nomes de origem tupi-guarani em homenagem a Ajuricaba, o histórico cacique
+// manaó que dá nome ao pai. São sugestões mais ousadas/exclusivas, não nomes de ranking.
+const CREATIVE_FEMALE: Raw[] = [
+  ['Fabiara', 'Homenagem à família', 'Combina o começo de Fabiana com Iara, a lendária mãe das águas do folclore brasileiro', 'Um nome-mistura pensado a partir do nome da mamãe.'],
+  ['Anajuri', 'Homenagem à família', 'Combina Ana (de Fabiana) com o som de Ajurycaba', 'Um nome exclusivo do casal, unindo os sons dos dois nomes dos pais.'],
+  ['Lucena', 'Português', 'Sobrenome de família que também funciona como nome próprio', 'É o sobrenome do papai (Cortez de Lucena) — uma homenagem direta à família dele.'],
+  ['Souzana', 'Homenagem à família', 'Combina o sobrenome Souza (da mamãe) com o final de Fabiana', 'Soa parecido com "Suzana", mas nasce do sobrenome de família da mamãe.'],
+  ['Jurema', 'Tupi', 'Árvore sagrada usada em rituais indígenas brasileiros', 'Já é um nome próprio real no Brasil, e o começo "Ju-" ecoa o som de "Ajurycaba".'],
+  ['Ajara', 'Homenagem à família', 'Combina Aju (apelido carinhoso do papai) com Jara, senhora em tupi', 'Um nome exclusivo que carrega o apelido do papai.'],
+  ['Cortesia', 'Homenagem à família + Português', 'Soa como a palavra cortesia (gentileza), inspirada no sobrenome Cortez do papai', 'Um trocadilho carinhoso com o sobrenome do papai.'],
+  ['Iara', 'Tupi', 'Senhora das águas, sereia lendária dos rios brasileiros', 'É uma das figuras mais conhecidas do folclore indígena brasileiro.'],
+  ['Jaci', 'Tupi', 'Lua', 'Jaci é a deusa da lua na mitologia tupi-guarani.'],
+  ['Araci', 'Tupi', 'Mãe do dia', 'Araci é associada ao sol nascente na mitologia tupi.'],
+  ['Moema', 'Tupi', 'Aquela que sofre, ou a que chora', 'É a heroína indígena da lenda que dá origem ao nome do Ceará.'],
+  ['Potira', 'Tupi', 'Flor', 'É um nome de origem tupi usado até hoje no Brasil.'],
+  ['Tainá', 'Tupi', 'Estrela nova, ou filha do rei', 'Ficou conhecido também pelo filme de animação brasileiro "Tainá".'],
+  ['Jandaia', 'Tupi', 'Nome de um pequeno papagaio brasileiro, símbolo de liberdade', 'A jandaia é uma ave típica do interior do Brasil.'],
+  ['Guaraci', 'Tupi', 'Senhora do sol', 'É uma variação de Coaraci, ligada ao sol na mitologia tupi-guarani.'],
+]
+
+const CREATIVE_MALE: Raw[] = [
+  ['Ajuri', 'Homenagem à família', 'Forma curta e moderna de Ajurycaba', 'Assim como "Aju" é o apelido carinhoso do papai, "Ajuri" seria uma versão própria pro filho, sem repetir o "Júnior".'],
+  ['Fabiano', 'Latim', 'Relativo à família romana Fábia', 'É a forma masculina direta do nome da mamãe, Fabiana.'],
+  ['Cortez', 'Português/Espanhol', 'Cortês, educado, ou relativo à corte', 'É o sobrenome do papai — uma homenagem direta usada como primeiro nome.'],
+  ['Jurandir', 'Tupi', 'Aquele que fala como um líder', 'É um nome brasileiro tradicional cujo começo "Ju-" ecoa o som de "Ajurycaba".'],
+  ['Ubiratã', 'Tupi', 'Forte como a madeira', 'Era um nome comum entre caciques e líderes indígenas brasileiros — assim como Ajuricaba.'],
+  ['Ubirajara', 'Tupi', 'Senhor da lança', 'Dá nome ao romance histórico de José de Alencar sobre um jovem guerreiro indígena.'],
+  ['Moacir', 'Tupi', 'Filho da dor', 'É um dos nomes de origem tupi mais usados e tradicionais do Brasil.'],
+  ['Iberê', 'Tupi', 'Aquele que apareceu, ou que nasceu', 'Ficou conhecido pelo pintor gaúcho Iberê Camargo.'],
+  ['Peri', 'Tupi (literário)', 'Nome do herói indígena do romance O Guarani', 'Peri é o protagonista do clássico romance de José de Alencar, símbolo do indígena brasileiro na literatura.'],
+  ['Piragibe', 'Tupi', 'Peixe valente', 'Foi o nome de um dos primeiros comandantes indígenas da aviação brasileira.'],
+  ['Coaraci', 'Tupi', 'Sol', 'Coaraci é a divindade do sol na mitologia tupi-guarani.'],
+  ['Sabiá', 'Tupi', 'Nome da ave símbolo do Brasil, famosa pelo canto', 'O sabiá é celebrado até em poesia, como no poema "Canção do Exílio".'],
+  ['Tupã', 'Tupi', 'Divindade suprema, associada ao trovão', 'Tupã é considerado o deus criador na mitologia tupi-guarani.'],
+  ['Araquém', 'Tupi', 'Senhor das araras', 'É um nome raro de origem tupi, ligado às araras da fauna brasileira.'],
+  ['Anauê', 'Tupi', 'Saudação que significa "somos irmãos"', 'É uma saudação indígena brasileira usada também como nome próprio.'],
+]
+
+const creativeNames = [...build(CREATIVE_FEMALE, 'F'), ...build(CREATIVE_MALE, 'M')].map((entry) => ({
+  ...entry,
+  creative: true,
+}))
+const usedIdsAfterCreative = new Set([...usedIdsAfterBicultural, ...dedupedBicultural.map((n) => n.id)])
+const dedupedCreative = creativeNames.filter((n) => !usedIdsAfterCreative.has(n.id))
+
+// Intercala nomes brasileiros, internacionais, biculturais e criativos (mantendo a ordem
+// relativa de cada lista), para que os nomes novos apareçam ao longo de todo o baralho, não
+// só no final. Também renumera o rank de forma sequencial e única por gênero, já que cada
+// lista de origem numerava a partir de 1 independentemente das outras.
 function interleaveAndRenumber(...lists: NameEntry[][]): NameEntry[] {
   const result: NameEntry[] = []
   const genders: Gender[] = ['F', 'M']
@@ -790,4 +839,9 @@ function interleaveAndRenumber(...lists: NameEntry[][]): NameEntry[] {
   return result
 }
 
-export const BASE_NAMES: NameEntry[] = interleaveAndRenumber(brazilianNames, dedupedInternational, dedupedBicultural)
+export const BASE_NAMES: NameEntry[] = interleaveAndRenumber(
+  brazilianNames,
+  dedupedInternational,
+  dedupedBicultural,
+  dedupedCreative,
+)

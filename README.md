@@ -15,6 +15,9 @@ celular e comparar os favoritos.
 - **Dois perfis** (Fabiana e Aju) — cada um guarda suas próprias decisões no navegador.
 - **Matches**: tela que mostra só os nomes que os dois curtiram, com estatísticas de quantos
   cada um já avaliou/curtiu.
+- **Copa dos Nomes**: chega de indecisão! Pega todos os matches (separados por Meninas e
+  Meninos) e faz um torneio eliminatório — escolham entre dois nomes por vez até sobrar um
+  campeão de cada gênero.
 - **Adicionar nomes**: não achou o nome dos sonhos na lista? Adicione com significado e
   curiosidade próprios — ele entra no baralho dos dois.
 - **Sincronizar entre celulares**: como não há servidor, cada dispositivo guarda seus dados

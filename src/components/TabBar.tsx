@@ -1,4 +1,4 @@
-export type Tab = 'swipe' | 'matches' | 'add' | 'sync'
+export type Tab = 'swipe' | 'matches' | 'cup' | 'add' | 'sync'
 
 interface Props {
   active: Tab
@@ -9,6 +9,7 @@ interface Props {
 const TABS: { id: Tab; label: string; icon: string }[] = [
   { id: 'swipe', label: 'Swipe', icon: '🔥' },
   { id: 'matches', label: 'Matches', icon: '💘' },
+  { id: 'cup', label: 'Copa', icon: '🏆' },
   { id: 'add', label: 'Add nome', icon: '➕' },
   { id: 'sync', label: 'Sincronizar', icon: '🔄' },
 ]

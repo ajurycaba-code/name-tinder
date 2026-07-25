@@ -1,10 +1,27 @@
-import { BASE_NAMES, type NameEntry } from '../data/names'
+import { BASE_NAMES, type Gender, type NameEntry } from '../data/names'
 import type { AllDecisions, Player, StoredState } from '../types'
+import type { TournamentState } from './tournament'
 
 const DECISIONS_KEY = 'nt_decisions_v1'
 const CUSTOM_NAMES_KEY = 'nt_custom_names_v1'
 const CURRENT_PLAYER_KEY = 'nt_current_player_v1'
 const LAST_SYNC_KEY = 'nt_last_sync_v1'
+const TOURNAMENT_KEY = 'nt_tournament_v1'
+
+export type TournamentsByGender = Partial<Record<Gender, TournamentState>>
+
+export function loadTournaments(): TournamentsByGender {
+  try {
+    const raw = localStorage.getItem(TOURNAMENT_KEY)
+    return raw ? (JSON.parse(raw) as TournamentsByGender) : {}
+  } catch {
+    return {}
+  }
+}
+
+export function saveTournaments(state: TournamentsByGender) {
+  localStorage.setItem(TOURNAMENT_KEY, JSON.stringify(state))
+}
 
 export function loadDecisions(): AllDecisions {
   try {

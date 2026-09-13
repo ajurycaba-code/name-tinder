@@ -1,3 +1,5 @@
+import { FAMOUS_BY_NAME } from './famous'
+
 export type Gender = 'F' | 'M'
 
 export interface NameEntry {
@@ -11,6 +13,10 @@ export interface NameEntry {
   custom?: boolean
   bicultural?: boolean
   creative?: boolean
+  // Escrito igual e natural nos dois idiomas, sem precisar de versão traduzida
+  crosslingual?: boolean
+  // Pessoas conhecidas com esse nome
+  famous?: string
   // Nome de quem sugeriu (amigos, família ou o próprio casal)
   suggestedBy?: string
 }
@@ -646,6 +652,23 @@ function slugify(text: string) {
     .replace(/(^-|-$)/g, '')
 }
 
+// Nomes escritos igual e que soam naturais tanto em português quanto em inglês —
+// dá pra usar o mesmo nome nos dois países sem virar apelido nem ser soletrado
+// o tempo todo. (Nomes com acento ficam de fora de propósito.)
+const CROSSLINGUAL = new Set([
+  // Femininos
+  'Ana', 'Alice', 'Amanda', 'Amber', 'Aurora', 'Bianca', 'Bruna', 'Carla', 'Carolina',
+  'Clara', 'Daniela', 'Elena', 'Emma', 'Eva', 'Helena', 'Iris', 'Isabel', 'Isabela',
+  'Isabella', 'Julia', 'Lara', 'Laura', 'Luna', 'Maria', 'Mariana', 'Marina', 'Melissa',
+  'Mia', 'Nicole', 'Nina', 'Olivia', 'Paula', 'Regina', 'Sandra', 'Sara', 'Sarah',
+  'Sofia', 'Sophia', 'Stella', 'Vanessa', 'Vera', 'Victoria', 'Zoe',
+  // Masculinos
+  'Adrian', 'Bruno', 'Daniel', 'David', 'Diego', 'Elias', 'Enzo', 'Felix', 'Fernando',
+  'Gabriel', 'Gael', 'Hugo', 'Igor', 'Isaac', 'Ivan', 'Leonardo', 'Lucas', 'Marcos',
+  'Martin', 'Mateo', 'Miguel', 'Nicolas', 'Noah', 'Oscar', 'Otto', 'Rafael', 'Ricardo',
+  'Roberto', 'Samuel', 'Silas', 'Simon', 'Thomas', 'Victor',
+])
+
 function build(list: Raw[], gender: Gender): NameEntry[] {
   return list.map(([name, origin, meaning, fact], index) => ({
     id: `${gender.toLowerCase()}-${slugify(name)}`,
@@ -655,6 +678,8 @@ function build(list: Raw[], gender: Gender): NameEntry[] {
     origin,
     meaning,
     fact,
+    ...(CROSSLINGUAL.has(name) ? { crosslingual: true } : {}),
+    ...(FAMOUS_BY_NAME[name] ? { famous: FAMOUS_BY_NAME[name] } : {}),
   }))
 }
 

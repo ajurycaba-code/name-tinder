@@ -13,6 +13,13 @@ aparelho vê tudo em tempo quase real, sem precisar sincronizar nada à mão.
   faz — ou use os botões. O card acompanha o arremesso e sai voando na direção do gesto;
   um peteleco curto e rápido já conta. Cada nome traz origem, significado e uma
   curiosidade/estatística.
+- **Card com contexto**: cada nome mostra pessoas conhecidas que o carregam (quando temos),
+  um link para buscar famosos no Google Imagens (link em vez de fotos, para não pesar) e
+  botões para **ouvir a pronúncia em português e em inglês**, usando a síntese de voz do
+  próprio navegador.
+- **Nomes que funcionam nos dois idiomas**: nomes escritos igual e naturais tanto em
+  português quanto em inglês (Maria, Gabriel, Emma, Rafael...) ganham um card especial, com
+  uma faixa nas cores das duas bandeiras.
 - **Três respostas por nome**: sim, não, e **tanto faz** — que não veta o nome nem o tira da
   disputa, só não conta como um sim. Nomes em que ninguém vetou mas alguém marcou "tanto
   faz" aparecem numa seção **🤔 Talvez** na tela de Matches.

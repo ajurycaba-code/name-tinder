@@ -44,6 +44,11 @@ aparelho vê tudo em tempo quase real, sem precisar sincronizar nada à mão.
 
 ## Configurando o banco de dados (Supabase)
 
+> Existe um guia detalhado, passo a passo e autocontido (com o SQL inline, queries de
+> verificação, teste de fumaça e tabela de problemas comuns) em
+> [`docs/INSTRUCOES-SUPABASE.md`](docs/INSTRUCOES-SUPABASE.md) — feito para entregar a
+> outra pessoa (ou a outro agente) que vá fazer a configuração.
+
 O app funciona sem banco nenhum — nesse caso ele cai no **modo local**, que guarda tudo só
 no navegador (como era antes) e não tem torcida nem login por telefone. Para ligar a nuvem:
 

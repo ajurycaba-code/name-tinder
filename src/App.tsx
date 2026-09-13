@@ -3,11 +3,12 @@ import { CupScreen } from './components/CupScreen'
 import { FullNameScreen } from './components/FullNameScreen'
 import { LoginGate } from './components/LoginGate'
 import { MatchesScreen } from './components/MatchesScreen'
+import { NewNamesBanner } from './components/NewNamesBanner'
 import { SwipeDeck } from './components/SwipeDeck'
 import { TabBar, type Tab } from './components/TabBar'
 import { TorcidaScreen } from './components/TorcidaScreen'
 import { useAppData } from './hooks/useAppData'
-import { buildOrderedNames, buildSwipeQueue, type GenderFilter } from './utils/queue'
+import { buildOrderedNames, buildSwipeQueue, pendingSuggestions, type GenderFilter } from './utils/queue'
 
 export default function App() {
   const data = useAppData()
@@ -23,6 +24,11 @@ export default function App() {
         ? buildSwipeQueue(orderedNames, data.decisions, data.profile.id, genderFilter)
         : [],
     [orderedNames, data.decisions, data.profile, genderFilter],
+  )
+
+  const novidades = useMemo(
+    () => (data.profile ? pendingSuggestions(data.allNames, data.decisions, data.profile.id) : []),
+    [data.allNames, data.decisions, data.profile],
   )
 
   if (data.status === 'loading') {
@@ -101,6 +107,14 @@ export default function App() {
       {header}
       {data.error && <p className="app-error">{data.error}</p>}
 
+      {novidades.length > 0 && (
+        <NewNamesBanner
+          count={novidades.length}
+          authors={novidades.map((entry) => entry.suggestedBy ?? '')}
+          onGo={() => setTab('swipe')}
+        />
+      )}
+
       <main className="app-main">
         {tab === 'swipe' && (
           <div className="screen">
@@ -153,7 +167,7 @@ export default function App() {
         active={tab}
         onChange={setTab}
         matchCount={data.matches.length}
-        suggestionCount={data.suggestions.length}
+        newNamesCount={novidades.length}
       />
     </div>
   )

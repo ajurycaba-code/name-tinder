@@ -35,6 +35,10 @@ aparelho vê tudo em tempo quase real, sem precisar sincronizar nada à mão.
   nomes, com um recado explicando o porquê. As sugestões caem direto no baralho do casal,
   com o selinho 💌 dizendo quem sugeriu, e todo mundo pode curtir as sugestões dos outros.
   Quem é da torcida vê só essa tela — o swipe, os matches e a copa são do casal.
+- **Aviso de nomes novos**: quando chega sugestão, o casal vê um aviso no topo ("🎉 3 novos
+  nomes para avaliação!", com os nomes de quem sugeriu) e um contador na aba Swipe. Os nomes
+  sugeridos furam a fila do baralho, então aparecem logo de cara. O aviso some sozinho
+  conforme os nomes vão sendo avaliados.
 - **Tudo salvo na nuvem**: os votos, as sugestões e os perfis ficam num banco Postgres no
   Supabase (plano gratuito). Trocar de celular ou limpar o navegador não perde nada.
 

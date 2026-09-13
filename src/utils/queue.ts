@@ -31,8 +31,21 @@ export function buildSwipeQueue(
   genderFilter: GenderFilter,
 ): NameEntry[] {
   const profileDecisions = decisions[profileId] ?? {}
-  return orderedNames.filter((n) => {
+  const pending = orderedNames.filter((n) => {
     if (genderFilter !== 'all' && n.gender !== genderFilter) return false
     return !(n.id in profileDecisions)
   })
+
+  // Nomes sugeridos furam a fila: são novidade e tem gente esperando resposta.
+  return [...pending.filter((n) => n.custom), ...pending.filter((n) => !n.custom)]
+}
+
+// Sugestões que este perfil ainda não avaliou — vira o aviso de "novos nomes".
+export function pendingSuggestions(
+  allNames: NameEntry[],
+  decisions: AllDecisions,
+  profileId: string,
+): NameEntry[] {
+  const profileDecisions = decisions[profileId] ?? {}
+  return allNames.filter((n) => n.custom && !(n.id in profileDecisions))
 }

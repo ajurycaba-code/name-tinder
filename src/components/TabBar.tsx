@@ -4,7 +4,7 @@ interface Props {
   active: Tab
   onChange: (tab: Tab) => void
   matchCount: number
-  suggestionCount: number
+  newNamesCount: number
 }
 
 const TABS: { id: Tab; label: string; icon: string }[] = [
@@ -15,11 +15,11 @@ const TABS: { id: Tab; label: string; icon: string }[] = [
   { id: 'torcida', label: 'Torcida', icon: '💌' },
 ]
 
-export function TabBar({ active, onChange, matchCount, suggestionCount }: Props) {
+export function TabBar({ active, onChange, matchCount, newNamesCount }: Props) {
   return (
     <nav className="tab-bar">
       {TABS.map((tab) => {
-        const badge = tab.id === 'matches' ? matchCount : tab.id === 'torcida' ? suggestionCount : 0
+        const badge = tab.id === 'matches' ? matchCount : tab.id === 'swipe' ? newNamesCount : 0
         return (
           <button
             key={tab.id}

@@ -756,6 +756,64 @@ textarea {
   padding-bottom: 30px;
 }
 
+/* Aviso de nomes novos chegando da torcida */
+@keyframes new-names-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.new-names-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: calc(100% - 32px);
+  margin: 0 16px 12px;
+  padding: 12px 14px;
+  border: none;
+  border-radius: 16px;
+  text-align: left;
+  color: white;
+  background: linear-gradient(135deg, var(--pink), var(--purple));
+  box-shadow: 0 10px 24px rgba(124, 92, 255, 0.28);
+  animation: new-names-in 0.35s ease-out;
+}
+
+.new-names-emoji {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.new-names-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.new-names-text strong {
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+.new-names-text small {
+  font-size: 0.75rem;
+  opacity: 0.9;
+}
+
+.new-names-go {
+  font-size: 1.5rem;
+  font-weight: 700;
+  opacity: 0.85;
+  flex-shrink: 0;
+}
+
 .name-card-suggested {
   align-self: flex-start;
   padding: 5px 12px;

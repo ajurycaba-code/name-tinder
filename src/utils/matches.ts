@@ -26,10 +26,17 @@ export interface NameScore {
   isFullMatch: boolean
 }
 
+interface ScoreboardOptions {
+  // Inclui sugestões mesmo sem nenhuma curtida ainda — é o que a torcida vê,
+  // para que um nome recém-sugerido já possa receber votos.
+  includeAllSuggestions?: boolean
+}
+
 export function computeScoreboard(
   allNames: NameEntry[],
   decisions: AllDecisions,
   profiles: Profile[],
+  options: ScoreboardOptions = {},
 ): NameScore[] {
   const parents = profiles.filter((profile) => profile.role === 'parent')
   const profileById = new Map(profiles.map((profile) => [profile.id, profile]))
@@ -47,7 +54,7 @@ export function computeScoreboard(
       if (profile) likedBy.push(profile)
     }
 
-    if (likedBy.length === 0) continue
+    if (likedBy.length === 0 && !(options.includeAllSuggestions && entry.custom)) continue
 
     const parentLikes = likedBy.filter((profile) => profile.role === 'parent').length
     scores.push({

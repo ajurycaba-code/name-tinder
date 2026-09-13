@@ -150,6 +150,12 @@ export function useAppData() {
     [allNames, snapshot.decisions, snapshot.profiles],
   )
 
+  // O que a torcida vê: tudo que está em jogo, incluindo sugestões sem curtida.
+  const torcidaPool = useMemo(
+    () => computeScoreboard(allNames, snapshot.decisions, snapshot.profiles, { includeAllSuggestions: true }),
+    [allNames, snapshot.decisions, snapshot.profiles],
+  )
+
   // Nomes já curtidos por OUTRA pessoa — são os candidatos a virar match, então
   // ganham prioridade no baralho de quem ainda não avaliou.
   const likedByOthers = useMemo(() => {
@@ -187,6 +193,7 @@ export function useAppData() {
     allNames,
     matches,
     scoreboard,
+    torcidaPool,
     likedByOthers,
     likesByNameId,
     login,

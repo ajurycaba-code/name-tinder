@@ -90,12 +90,18 @@ export default function App() {
   const torcida = (
     <TorcidaScreen
       profile={profile}
-      suggestions={data.suggestions}
+      pool={data.torcidaPool}
       decisions={data.decisions}
-      likesByNameId={data.likesByNameId}
+      mySuggestionIds={
+        new Set(
+          data.suggestions
+            .filter((suggestion) => suggestion.profileId === profile.id)
+            .map((suggestion) => suggestion.id),
+        )
+      }
       onAdd={data.addSuggestion}
       onRemove={data.removeSuggestion}
-      onVote={(nameId) => data.decide(nameId, 'like')}
+      onVote={(nameId, decision) => data.decide(nameId, decision)}
       onUndoVote={data.undoDecide}
     />
   )

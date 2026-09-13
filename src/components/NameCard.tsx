@@ -5,6 +5,7 @@ interface Props {
   entry: NameEntry
   dragX?: number
   dragY?: number
+  likeStamp?: string
 }
 
 // Impede que tocar num botão/link do card comece a arrastar a carta.
@@ -12,7 +13,7 @@ function swallow(event: React.PointerEvent) {
   event.stopPropagation()
 }
 
-export function NameCard({ entry, dragX = 0, dragY = 0 }: Props) {
+export function NameCard({ entry, dragX = 0, dragY = 0, likeStamp = 'MATCH?' }: Props) {
   // O gesto vertical só "vence" o horizontal quando é claramente para cima.
   const vertical = Math.abs(dragY) > Math.abs(dragX)
   const likeOpacity = vertical ? 0 : Math.min(Math.max(dragX / 100, 0), 1)
@@ -22,7 +23,7 @@ export function NameCard({ entry, dragX = 0, dragY = 0 }: Props) {
   return (
     <div className={`name-card ${entry.crosslingual ? 'name-card-cross' : ''}`}>
       <div className="name-card-stamp name-card-stamp-like" style={{ opacity: likeOpacity }}>
-        MATCH?
+        {likeStamp}
       </div>
       <div className="name-card-stamp name-card-stamp-nope" style={{ opacity: nopeOpacity }}>
         PASSO

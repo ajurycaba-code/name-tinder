@@ -108,36 +108,31 @@ export function LoginGate({ mode, onLogin, lookupPhone }: Props) {
     <div className="gate">
       <div className="gate-card">
         <p className="gate-emoji">👋</p>
-        <h1>Primeira vez por aqui!</h1>
-        <p className="gate-subtitle">Como você se chama?</p>
+        <h1>Bem-vindo à torcida!</h1>
+        <p className="gate-subtitle">
+          Como você se chama? É assim que a Fabiana e o Aju vão ver os seus votos.
+        </p>
         <input
           className="gate-input"
           value={name}
           onChange={(event) => setName(event.target.value)}
           placeholder="Seu nome"
           aria-label="Seu nome"
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' && name.trim() && !busy) {
+              void run(() => onLogin({ phone: digits, name: name.trim() }))
+            }
+          }}
         />
 
-        <p className="gate-question">Quem é você?</p>
-        <div className="gate-buttons">
-          {PARENT_NAMES.map((parentName) => (
-            <button
-              key={parentName}
-              className="gate-btn"
-              disabled={busy}
-              onClick={() => void run(() => onLogin({ phone: digits, parentName }))}
-            >
-              Sou {parentName}
-            </button>
-          ))}
-        </div>
-
+        {/* Os perfis do casal já têm telefone cadastrado: entram sozinhos pela
+            tela anterior. Ninguém consegue assumir o lugar deles daqui. */}
         <button
-          className="gate-btn gate-btn-wide gate-btn-guest"
+          className="gate-btn gate-btn-wide"
           disabled={busy || !name.trim()}
           onClick={() => void run(() => onLogin({ phone: digits, name: name.trim() }))}
         >
-          {busy ? 'Entrando…' : 'Sou amigo / família 💌'}
+          {busy ? 'Entrando…' : 'Entrar 💌'}
         </button>
 
         {error && <p className="gate-error">{error}</p>}

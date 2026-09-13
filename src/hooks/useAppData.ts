@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { BASE_NAMES, type NameEntry } from '../data/names'
 import { repo, suggestionToEntry, type Snapshot } from '../data/repo'
 import type { Decision, Profile, SuggestionInput } from '../types'
-import { computeMatches } from '../utils/matches'
+import { computeMatches, computeMaybes } from '../utils/matches'
 import {
   clearProfile,
   legacyDecisionsFor,
@@ -143,6 +143,11 @@ export function useAppData() {
     [allNames, snapshot.decisions, parents],
   )
 
+  const maybes = useMemo(
+    () => computeMaybes(allNames, snapshot.decisions, parents.map((parent) => parent.id)),
+    [allNames, snapshot.decisions, parents],
+  )
+
   // Quantas pessoas curtiram cada nome (usado no placar da torcida).
   const likesByNameId = useMemo(() => {
     const counts: Record<string, number> = {}
@@ -165,6 +170,7 @@ export function useAppData() {
     suggestions: snapshot.suggestions,
     allNames,
     matches,
+    maybes,
     likesByNameId,
     login,
     lookupPhone,

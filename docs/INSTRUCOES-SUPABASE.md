@@ -188,6 +188,29 @@ create policy full_names_all on public.full_names for all using (true) with chec
 
 Resultado esperado: **Success. No rows returned.**
 
+### 4.1 Se o banco JÁ existia antes (migrações)
+
+O SQL do passo 2 usa `create table if not exists`, então rodá-lo de novo **não altera
+tabelas que já existem**. Se este banco foi criado antes de alguma mudança do app, rode
+também os arquivos da pasta `supabase/migrations/`, em ordem, no mesmo SQL Editor:
+
+| Migração | O que faz | Precisa rodar se |
+| --- | --- | --- |
+| `001-adicionar-voto-neutro.sql` | Passa a aceitar `decision = 'neutral'` na tabela `votes` | O banco foi criado antes da opção "tanto faz" |
+
+Sem a 001, votar "tanto faz" no app falha com erro 400 do Postgres. Para saber se precisa,
+rode:
+
+```sql
+select pg_get_constraintdef(con.oid)
+from pg_constraint con
+join pg_class rel on rel.oid = con.conrelid
+where rel.relname = 'votes' and con.contype = 'c'
+  and pg_get_constraintdef(con.oid) ilike '%decision%';
+```
+
+Se o resultado **não** mencionar `'neutral'`, rode a migração 001.
+
 ---
 
 ## 5. Passo 3 — Conferir que o schema ficou certo
@@ -225,6 +248,9 @@ reivindica o próprio perfil no primeiro login):
 Aju      | parent | null
 Fabiana  | parent | null
 ```
+
+(Se alguém já tiver entrado no app, o `phone` dessa pessoa aparece preenchido — isso é
+normal.)
 
 ⚠️ Se aparecerem 4 linhas (dois "Fabiana" e dois "Aju"), alguém rodou um `insert` duplicado.
 Apague as sobras mantendo só uma de cada:

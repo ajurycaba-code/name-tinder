@@ -1,6 +1,7 @@
 import type { Gender } from './data/names'
 
-export type Decision = 'like' | 'dislike'
+// 'neutral' = "tanto faz": não veta o nome nem o tira da disputa, mas não é um sim.
+export type Decision = 'like' | 'dislike' | 'neutral'
 
 // Mapa: nomeId -> decisão
 export type PlayerDecisions = Record<string, Decision>

@@ -1,15 +1,35 @@
 import type { NameEntry } from '../data/names'
 import type { AllDecisions, Profile } from '../types'
-import { decidedCount, likedCount } from '../utils/matches'
+import { decidedCount, likedCount, neutralCount } from '../utils/matches'
 
 interface Props {
   matches: NameEntry[]
+  maybes: NameEntry[]
   decisions: AllDecisions
   parents: Profile[]
   totalNames: number
 }
 
-export function MatchesScreen({ matches, decisions, parents, totalNames }: Props) {
+function NameList({ entries }: { entries: NameEntry[] }) {
+  return (
+    <ul className="match-list">
+      {entries.map((entry) => (
+        <li key={entry.id} className="match-item">
+          <div className={`match-avatar ${entry.gender === 'F' ? 'badge-f' : 'badge-m'}`}>
+            {entry.gender === 'F' ? '♀' : '♂'}
+          </div>
+          <div>
+            <p className="match-name">{entry.name}</p>
+            <p className="match-meaning">{entry.meaning}</p>
+            {entry.suggestedBy && <p className="torcida-author">sugerido por {entry.suggestedBy}</p>}
+          </div>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+export function MatchesScreen({ matches, maybes, decisions, parents, totalNames }: Props) {
   return (
     <div className="screen">
       <h2 className="screen-title">💘 Matches</h2>
@@ -23,6 +43,7 @@ export function MatchesScreen({ matches, decisions, parents, totalNames }: Props
             <p className="stat-value">{likedCount(decisions, parent.id)}</p>
             <p className="stat-label">curtidos por {parent.name}</p>
             <p className="stat-sub">
+              {neutralCount(decisions, parent.id)} tanto faz ·{' '}
               {decidedCount(decisions, parent.id)}/{totalNames} avaliados
             </p>
           </div>
@@ -35,20 +56,17 @@ export function MatchesScreen({ matches, decisions, parents, totalNames }: Props
           <p>Ainda não há matches. Continuem deslizando!</p>
         </div>
       ) : (
-        <ul className="match-list">
-          {matches.map((entry) => (
-            <li key={entry.id} className="match-item">
-              <div className={`match-avatar ${entry.gender === 'F' ? 'badge-f' : 'badge-m'}`}>
-                {entry.gender === 'F' ? '♀' : '♂'}
-              </div>
-              <div>
-                <p className="match-name">{entry.name}</p>
-                <p className="match-meaning">{entry.meaning}</p>
-                {entry.suggestedBy && <p className="torcida-author">sugerido por {entry.suggestedBy}</p>}
-              </div>
-            </li>
-          ))}
-        </ul>
+        <NameList entries={matches} />
+      )}
+
+      {maybes.length > 0 && (
+        <section className="maybe-section">
+          <h3 className="torcida-heading">🤔 Talvez ({maybes.length})</h3>
+          <p className="screen-subtitle">
+            Ninguém vetou, mas pelo menos um de vocês marcou &quot;tanto faz&quot; — seguem na disputa.
+          </p>
+          <NameList entries={maybes} />
+        </section>
       )}
     </div>
   )

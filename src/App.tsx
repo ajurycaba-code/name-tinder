@@ -150,6 +150,7 @@ export default function App() {
         {tab === 'matches' && (
           <MatchesScreen
             matches={data.matches}
+            maybes={data.maybes}
             decisions={data.decisions}
             parents={data.parents}
             totalNames={data.allNames.length}

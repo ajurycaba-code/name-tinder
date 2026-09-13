@@ -38,7 +38,8 @@ create table if not exists public.votes (
   profile_id uuid not null references public.profiles(id) on delete cascade,
   -- id do nome: da lista base ("f-alice") ou o uuid de uma sugestão
   name_id    text not null,
-  decision   text not null check (decision in ('like', 'dislike')),
+  -- 'neutral' = "tanto faz": não veta o nome, mas também não é um sim
+  decision   text not null check (decision in ('like', 'dislike', 'neutral')),
   updated_at timestamptz not null default now(),
   primary key (profile_id, name_id)
 );

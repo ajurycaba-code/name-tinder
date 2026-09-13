@@ -473,6 +473,8 @@ const FEMALE_INTL: Raw[] = [
   ['Aveline', 'Francês/Germânico', 'Variação francesa de Evelyn', 'Ganhou popularidade após aparecer em jogos e séries históricas ambientadas na França.'],
   ['Romy', 'Alemão/Francês', 'Feminino de Romeu, ou forma curta de Rosemary', 'Ficou associado à atriz austríaca Romy Schneider.'],
   ['Cleo', 'Grego', 'Forma curta de Cleópatra, "glória do pai"', 'Cleópatra foi a última faraó ativa do Egito Antigo.'],
+  ['Amber', 'Inglês', 'Âmbar, a resina dourada usada como pedra preciosa', 'Entrou para o top 20 dos Estados Unidos nos anos 1980 e 1990, e é um dos poucos nomes tirados de uma pedra, como Ruby e Pearl.'],
+  ['Victoria', 'Latim', 'Vitória, triunfo', 'É a grafia internacional de Vitória, usada em inglês, espanhol e alemão — a rainha Vitória deu nome a uma era inteira da história britânica.'],
 ]
 
 const MALE_INTL: Raw[] = [

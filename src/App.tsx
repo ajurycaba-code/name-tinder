@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { AddNameScreen } from './components/AddNameScreen'
 import { CupScreen } from './components/CupScreen'
+import { FullNameScreen } from './components/FullNameScreen'
 import { MatchesScreen } from './components/MatchesScreen'
 import { PlayerGate } from './components/PlayerGate'
 import { SwipeDeck } from './components/SwipeDeck'
@@ -94,6 +95,8 @@ export default function App() {
         )}
 
         {tab === 'cup' && <CupScreen matches={matches} />}
+
+        {tab === 'fullname' && <FullNameScreen matches={matches} />}
 
         {tab === 'add' && (
           <AddNameScreen onAdd={addCustomName} existingIds={new Set(allNames.map((n) => n.id))} />

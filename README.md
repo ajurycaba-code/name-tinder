@@ -26,6 +26,9 @@ celular e comparar os favoritos.
 - **Copa dos Nomes**: chega de indecisão! Pega todos os matches (separados por Meninas e
   Meninos) e faz um torneio eliminatório — escolham entre dois nomes por vez até sobrar um
   campeão de cada gênero.
+- **Nome completo**: monta o nome do bebê juntando o primeiro nome (dos matches ou do
+  campeão da copa) com os sobrenomes das duas famílias, com controle de ordem, da partícula
+  "de" e atalhos prontos. Mostra iniciais e tamanho do nome, e guarda os favoritos.
 - **Adicionar nomes**: não achou o nome dos sonhos na lista? Adicione com significado e
   curiosidade próprios — ele entra no baralho dos dois.
 - **Sincronizar entre celulares**: como não há servidor, cada dispositivo guarda seus dados

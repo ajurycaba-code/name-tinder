@@ -148,6 +148,20 @@ export function useAppData() {
     [allNames, snapshot.decisions, parents],
   )
 
+  // Nomes já curtidos por OUTRA pessoa — são os candidatos a virar match, então
+  // ganham prioridade no baralho de quem ainda não avaliou.
+  const likedByOthers = useMemo(() => {
+    const ids = new Set<string>()
+    if (!profile) return ids
+    for (const [otherId, votes] of Object.entries(snapshot.decisions)) {
+      if (otherId === profile.id) continue
+      for (const [nameId, decision] of Object.entries(votes)) {
+        if (decision === 'like') ids.add(nameId)
+      }
+    }
+    return ids
+  }, [snapshot.decisions, profile])
+
   // Quantas pessoas curtiram cada nome (usado no placar da torcida).
   const likesByNameId = useMemo(() => {
     const counts: Record<string, number> = {}
@@ -171,6 +185,7 @@ export function useAppData() {
     allNames,
     matches,
     maybes,
+    likedByOthers,
     likesByNameId,
     login,
     lookupPhone,

@@ -1,7 +1,9 @@
 import { useMemo, useState } from 'react'
+import type { NameEntry } from './data/names'
 import { CupScreen } from './components/CupScreen'
 import { FullNameScreen } from './components/FullNameScreen'
 import { LoginGate } from './components/LoginGate'
+import { MatchCelebration } from './components/MatchCelebration'
 import { MatchesScreen } from './components/MatchesScreen'
 import { NewNamesBanner } from './components/NewNamesBanner'
 import { SwipeDeck } from './components/SwipeDeck'
@@ -15,15 +17,22 @@ export default function App() {
   const [tab, setTab] = useState<Tab>('swipe')
   const [genderFilter, setGenderFilter] = useState<GenderFilter>('all')
   const [lastUndo, setLastUndo] = useState<string | null>(null)
+  const [celebrando, setCelebrando] = useState<NameEntry | null>(null)
 
   const orderedNames = useMemo(() => buildOrderedNames(data.allNames), [data.allNames])
 
   const queue = useMemo(
     () =>
       data.profile
-        ? buildSwipeQueue(orderedNames, data.decisions, data.profile.id, genderFilter)
+        ? buildSwipeQueue(
+            orderedNames,
+            data.decisions,
+            data.profile.id,
+            genderFilter,
+            data.likedByOthers,
+          )
         : [],
-    [orderedNames, data.decisions, data.profile, genderFilter],
+    [orderedNames, data.decisions, data.profile, genderFilter, data.likedByOthers],
   )
 
   const novidades = useMemo(
@@ -134,8 +143,16 @@ export default function App() {
               queue={queue}
               canUndo={Boolean(lastUndo)}
               onDecision={(entry, decision) => {
+                // Antes de gravar: este "sim" é o que fecha o match?
+                const outros = data.parents.filter((parent) => parent.id !== profile.id)
+                const fechaMatch =
+                  decision === 'like' &&
+                  outros.length > 0 &&
+                  outros.every((parent) => data.decisions[parent.id]?.[entry.id] === 'like')
+
                 data.decide(entry.id, decision)
                 setLastUndo(entry.id)
+                if (fechaMatch) setCelebrando(entry)
               }}
               onUndo={() => {
                 if (lastUndo) {
@@ -163,6 +180,8 @@ export default function App() {
 
         {tab === 'torcida' && torcida}
       </main>
+
+      {celebrando && <MatchCelebration entry={celebrando} onDone={() => setCelebrando(null)} />}
 
       <TabBar
         active={tab}

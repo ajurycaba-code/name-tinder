@@ -1,10 +1,10 @@
 import type { Gender, NameEntry } from '../data/names'
-import type { AllDecisions, Player } from '../types'
+import type { AllDecisions } from '../types'
 
 export type GenderFilter = 'all' | Gender
 
 // Intercala nomes femininos e masculinos (por rank) para o baralho ficar equilibrado,
-// e deixa os nomes sugeridos pelo casal (custom) por último, também intercalados.
+// e deixa os nomes sugeridos (pelo casal ou pela torcida) por último, também intercalados.
 export function buildOrderedNames(allNames: NameEntry[]): NameEntry[] {
   const base = allNames.filter((n) => !n.custom)
   const custom = allNames.filter((n) => n.custom)
@@ -27,12 +27,12 @@ export function buildOrderedNames(allNames: NameEntry[]): NameEntry[] {
 export function buildSwipeQueue(
   orderedNames: NameEntry[],
   decisions: AllDecisions,
-  player: Player,
+  profileId: string,
   genderFilter: GenderFilter,
 ): NameEntry[] {
-  const playerDecisions = decisions[player] ?? {}
+  const profileDecisions = decisions[profileId] ?? {}
   return orderedNames.filter((n) => {
     if (genderFilter !== 'all' && n.gender !== genderFilter) return false
-    return !(n.id in playerDecisions)
+    return !(n.id in profileDecisions)
   })
 }

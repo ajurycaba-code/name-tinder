@@ -6,3 +6,7 @@ dist-ssr
 
 .DS_Store
 *.log
+
+# variáveis de ambiente locais
+.env
+.env.local

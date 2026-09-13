@@ -1,17 +1,53 @@
-import type { NameEntry } from './data/names'
+import type { Gender } from './data/names'
 
 export type Decision = 'like' | 'dislike'
 
 // Mapa: nomeId -> decisão
 export type PlayerDecisions = Record<string, Decision>
 
-// Mapa: jogador -> decisões
+// Mapa: id do perfil -> decisões
 export type AllDecisions = Record<string, PlayerDecisions>
 
-export interface StoredState {
-  decisions: AllDecisions
-  customNames: NameEntry[]
+export type ProfileRole = 'parent' | 'guest'
+
+export interface Profile {
+  id: string
+  name: string
+  phone: string | null
+  role: ProfileRole
 }
 
-export const PLAYERS = ['Fabiana', 'Aju'] as const
-export type Player = (typeof PLAYERS)[number]
+export interface Suggestion {
+  id: string
+  profileId: string | null
+  authorName: string
+  name: string
+  gender: Gender
+  origin: string
+  meaning: string
+  fact: string
+  note: string
+  createdAt: string
+}
+
+export interface SuggestionInput {
+  name: string
+  gender: Gender
+  origin: string
+  meaning: string
+  fact: string
+  note: string
+}
+
+// Nomes dos pais, usados tanto no modo local quanto para criar os perfis na nuvem.
+export const PARENT_NAMES = ['Fabiana', 'Aju'] as const
+export type ParentName = (typeof PARENT_NAMES)[number]
+
+// No modo local (sem nuvem configurada) os dois perfis do casal têm id fixo igual
+// ao nome, para continuar lendo os dados que já estavam salvos no navegador.
+export const LOCAL_PROFILES: Profile[] = PARENT_NAMES.map((name) => ({
+  id: name,
+  name,
+  phone: null,
+  role: 'parent' as const,
+}))

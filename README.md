@@ -3,8 +3,9 @@
 Um "Tinder de nomes de bebê": deslize para a direita (❤️) ou esquerda (✕) nos nomes mais
 populares do Brasil, e descubra os nomes que **os dois** curtiram — os matches!
 
-Roda 100% no navegador (sem backend, sem cadastro). Feito para o casal jogar cada um no seu
-celular e comparar os favoritos.
+Feito para o casal jogar cada um no seu celular e comparar os favoritos — e para amigos e
+familiares sugerirem nomes também. Os dados ficam salvos na nuvem (Supabase), então cada
+aparelho vê tudo em tempo quase real, sem precisar sincronizar nada à mão.
 
 ## Funcionalidades
 
@@ -20,7 +21,8 @@ celular e comparar os favoritos.
 - **Nomes criativos exclusivos**: uma lista à parte inspirada nos nomes dos próprios pais —
   variações, combinações e homenagens aos nomes e sobrenomes da família, além de nomes de
   origem tupi-guarani. Esses cards aparecem com o selinho ✨ nome exclusivo da família.
-- **Dois perfis** (Fabiana e Aju) — cada um guarda suas próprias decisões no navegador.
+- **Login por telefone**: entra com o número, sem senha. Se for a primeira vez, escolhe se é
+  um dos pais ou alguém da torcida. Da segunda vez em diante, só o telefone já entra.
 - **Matches**: tela que mostra só os nomes que os dois curtiram, com estatísticas de quantos
   cada um já avaliou/curtiu.
 - **Copa dos Nomes**: chega de indecisão! Pega todos os matches (separados por Meninas e
@@ -29,12 +31,43 @@ celular e comparar os favoritos.
 - **Nome completo**: monta o nome do bebê juntando o primeiro nome (dos matches ou do
   campeão da copa) com os sobrenomes das duas famílias, com controle de ordem, da partícula
   "de" e atalhos prontos. Mostra iniciais e tamanho do nome, e guarda os favoritos.
-- **Adicionar nomes**: não achou o nome dos sonhos na lista? Adicione com significado e
-  curiosidade próprios — ele entra no baralho dos dois.
-- **Sincronizar entre celulares**: como não há servidor, cada dispositivo guarda seus dados
-  localmente (`localStorage`). Na aba "Sincronizar", copie o código gerado e mande pro seu
-  par colar no celular dele (ex: por WhatsApp) para combinar as decisões e ver os matches
-  reais dos dois.
+- **Torcida (amigos e família)**: qualquer pessoa com o link entra com o telefone e sugere
+  nomes, com um recado explicando o porquê. As sugestões caem direto no baralho do casal,
+  com o selinho 💌 dizendo quem sugeriu, e todo mundo pode curtir as sugestões dos outros.
+  Quem é da torcida vê só essa tela — o swipe, os matches e a copa são do casal.
+- **Tudo salvo na nuvem**: os votos, as sugestões e os perfis ficam num banco Postgres no
+  Supabase (plano gratuito). Trocar de celular ou limpar o navegador não perde nada.
+
+## Configurando o banco de dados (Supabase)
+
+O app funciona sem banco nenhum — nesse caso ele cai no **modo local**, que guarda tudo só
+no navegador (como era antes) e não tem torcida nem login por telefone. Para ligar a nuvem:
+
+1. Crie uma conta e um projeto gratuito em [supabase.com](https://supabase.com).
+2. No projeto, abra **SQL Editor**, cole o conteúdo de [`supabase/schema.sql`](supabase/schema.sql)
+   e clique em **Run**. Isso cria as tabelas, as permissões e os dois perfis do casal.
+3. Vá em **Project Settings → API** e copie dois valores: a **Project URL** e a chave
+   **anon public**.
+4. Para rodar na sua máquina: copie `.env.example` para `.env` e preencha os dois valores.
+5. Para o site publicado no GitHub Pages: no repositório, vá em **Settings → Secrets and
+   variables → Actions → New repository secret** e crie dois segredos com exatamente estes
+   nomes:
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+
+   Depois é só rodar o workflow "Deploy to GitHub Pages" de novo (ou fazer qualquer push na
+   `main`) que o site passa a usar a nuvem.
+
+No primeiro login de cada um dos pais, os swipes que já estavam salvos naquele navegador são
+enviados para a nuvem automaticamente, uma única vez.
+
+### Sobre a segurança
+
+Não existe autenticação de verdade: o login é só o telefone, sem senha e sem SMS — foi uma
+escolha consciente, já que é um app de brincadeira com link compartilhado entre conhecidos.
+Na prática, quem souber o telefone de alguém consegue entrar como aquela pessoa, e a chave
+`anon` que vai no site permite ler e escrever nas tabelas. Por isso o schema bloqueia apagar
+perfis, e nada sensível deve ser guardado aqui.
 
 ## Rodando localmente
 

@@ -47,6 +47,12 @@ aparelho vê tudo em tempo quase real, sem precisar sincronizar nada à mão.
   nomes, com um recado explicando o porquê. As sugestões caem direto no baralho do casal,
   com o selinho 💌 dizendo quem sugeriu, e todo mundo pode curtir as sugestões dos outros.
   Quem é da torcida vê só essa tela — o swipe, os matches e a copa são do casal.
+- **Confete no match**: quando o seu "sim" fecha um match, a tela comemora com confete e o
+  nome em destaque. (Respeita `prefers-reduced-motion`.)
+- **Baralho embaralhado com prioridade**: a ordem dos nomes é sorteada, mas de forma estável
+  — a mesma pessoa vê sempre a mesma sequência, e cada um tem a sua. Nomes que a outra
+  pessoa já curtiu (ou seja, candidatos a virar match) têm chance bem maior de aparecer logo
+  no começo, e as sugestões da torcida continuam furando a fila.
 - **Aviso de nomes novos**: quando chega sugestão, o casal vê um aviso no topo ("🎉 3 novos
   nomes para avaliação!", com os nomes de quem sugeriu) e um contador na aba Swipe. Os nomes
   sugeridos furam a fila do baralho, então aparecem logo de cara. O aviso some sozinho

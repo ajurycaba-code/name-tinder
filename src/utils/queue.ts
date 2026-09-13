@@ -24,20 +24,45 @@ export function buildOrderedNames(allNames: NameEntry[]): NameEntry[] {
   return [...interleave(base), ...interleave(custom)]
 }
 
+// Hash determinístico de uma string para um número entre 0 e 1. Serve de
+// "sorteio estável": embaralha o baralho, mas sempre da mesma forma para a
+// mesma pessoa, então a fila não fica pulando a cada recarga da página.
+function sorteioEstavel(chave: string): number {
+  let hash = 2166136261
+  for (let i = 0; i < chave.length; i++) {
+    hash ^= chave.charCodeAt(i)
+    hash = Math.imul(hash, 16777619)
+  }
+  return ((hash >>> 0) % 100000) / 100000
+}
+
+// Quanto menor a pontuação, mais cedo o nome aparece.
+const PESO_SUGESTAO = 2 // sugestões da torcida vão direto pra frente
+const PESO_CURTIDO = 0.55 // curtido por outra pessoa: boa chance de vir cedo
+
 export function buildSwipeQueue(
   orderedNames: NameEntry[],
   decisions: AllDecisions,
   profileId: string,
   genderFilter: GenderFilter,
+  // Nomes que outra pessoa já curtiu — candidatos a virar match.
+  curtidosPorOutros?: Set<string>,
 ): NameEntry[] {
   const profileDecisions = decisions[profileId] ?? {}
-  const pending = orderedNames.filter((n) => {
+  const pendentes = orderedNames.filter((n) => {
     if (genderFilter !== 'all' && n.gender !== genderFilter) return false
     return !(n.id in profileDecisions)
   })
 
-  // Nomes sugeridos furam a fila: são novidade e tem gente esperando resposta.
-  return [...pending.filter((n) => n.custom), ...pending.filter((n) => !n.custom)]
+  return pendentes
+    .map((entry) => {
+      let pontuacao = sorteioEstavel(entry.id + profileId)
+      if (entry.custom) pontuacao -= PESO_SUGESTAO
+      else if (curtidosPorOutros?.has(entry.id)) pontuacao -= PESO_CURTIDO
+      return { entry, pontuacao }
+    })
+    .sort((a, b) => a.pontuacao - b.pontuacao)
+    .map((item) => item.entry)
 }
 
 // Sugestões que este perfil ainda não avaliou — vira o aviso de "novos nomes".

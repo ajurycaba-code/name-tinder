@@ -166,8 +166,7 @@ export default function App() {
 
         {tab === 'matches' && (
           <MatchesScreen
-            matches={data.matches}
-            maybes={data.maybes}
+            scoreboard={data.scoreboard}
             decisions={data.decisions}
             parents={data.parents}
             totalNames={data.allNames.length}

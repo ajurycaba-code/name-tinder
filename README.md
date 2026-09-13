@@ -21,8 +21,11 @@ aparelho vê tudo em tempo quase real, sem precisar sincronizar nada à mão.
   português quanto em inglês (Maria, Gabriel, Emma, Rafael...) ganham um card especial, com
   uma faixa nas cores das duas bandeiras.
 - **Três respostas por nome**: sim, não, e **tanto faz** — que não veta o nome nem o tira da
-  disputa, só não conta como um sim. Nomes em que ninguém vetou mas alguém marcou "tanto
-  faz" aparecem numa seção **🤔 Talvez** na tela de Matches.
+  disputa, só não conta como uma curtida.
+- **Placar dos nomes**: em vez de uma lista de "deu match ou não deu", a tela mostra todo
+  nome que alguém curtiu e ninguém do casal vetou, ordenado por número de curtidas. Os dois
+  curtiram, são duas curtidas; só um curtiu, é uma. As curtidas da torcida também entram na
+  conta, separadas das do casal.
 - **~700 nomes** (quase 300 populares no Brasil + mais de 300 populares nos EUA e em alta ao
   redor do mundo + 72 nomes compostos biculturais + 30 nomes criativos exclusivos),
   intercalados no baralho, com filtro por Meninas / Meninos / Todos.

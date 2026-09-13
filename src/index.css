@@ -261,6 +261,93 @@ textarea {
   color: #6b5b1f;
 }
 
+/* Card bilingue: faixa com as cores das duas bandeiras */
+.name-card-cross::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(
+    90deg,
+    #009c3b 0%,
+    #009c3b 22%,
+    #ffdf00 22%,
+    #ffdf00 44%,
+    #3c3b6e 56%,
+    #3c3b6e 72%,
+    #b22234 72%,
+    #b22234 100%
+  );
+}
+
+.name-card-cross-badge {
+  align-self: flex-start;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  margin: -8px 0 16px;
+  background: linear-gradient(90deg, #e8f7ee, #eef0ff);
+  color: #2f6b46;
+  border: 1px solid #d8ecdf;
+}
+
+/* Pronuncia */
+.name-card-speak {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: -10px 0 16px;
+}
+
+.name-card-speak-label {
+  font-size: 0.7rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+}
+
+.speak-btn {
+  border: 1px solid #eadfe6;
+  background: white;
+  border-radius: 999px;
+  padding: 5px 11px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--purple);
+}
+
+.speak-btn:active {
+  background: #f4f0ff;
+  transform: scale(0.94);
+}
+
+/* Famosos */
+.name-card-famous {
+  font-size: 0.85rem;
+  margin: 0;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.name-card-images {
+  display: inline-block;
+  margin-top: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--purple);
+  text-decoration: none;
+  align-self: flex-start;
+}
+
+.name-card-images:active {
+  opacity: 0.6;
+}
+
 .name-card-creative {
   align-self: flex-start;
   padding: 5px 12px;

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { BASE_NAMES, type NameEntry } from '../data/names'
 import { repo, suggestionToEntry, type Snapshot } from '../data/repo'
 import type { Decision, Profile, SuggestionInput } from '../types'
-import { computeMatches, computeMaybes } from '../utils/matches'
+import { computeMatches, computeScoreboard } from '../utils/matches'
 import {
   clearProfile,
   legacyDecisionsFor,
@@ -143,9 +143,11 @@ export function useAppData() {
     [allNames, snapshot.decisions, parents],
   )
 
-  const maybes = useMemo(
-    () => computeMaybes(allNames, snapshot.decisions, parents.map((parent) => parent.id)),
-    [allNames, snapshot.decisions, parents],
+  // Placar: todo nome curtido por alguém e não vetado pelo casal, do mais
+  // curtido pro menos.
+  const scoreboard = useMemo(
+    () => computeScoreboard(allNames, snapshot.decisions, snapshot.profiles),
+    [allNames, snapshot.decisions, snapshot.profiles],
   )
 
   // Nomes já curtidos por OUTRA pessoa — são os candidatos a virar match, então
@@ -184,7 +186,7 @@ export function useAppData() {
     suggestions: snapshot.suggestions,
     allNames,
     matches,
-    maybes,
+    scoreboard,
     likedByOthers,
     likesByNameId,
     login,

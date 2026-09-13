@@ -1,40 +1,62 @@
-import type { NameEntry } from '../data/names'
 import type { AllDecisions, Profile } from '../types'
-import { decidedCount, likedCount, neutralCount } from '../utils/matches'
+import { decidedCount, likedCount, neutralCount, type NameScore } from '../utils/matches'
 
 interface Props {
-  matches: NameEntry[]
-  maybes: NameEntry[]
+  scoreboard: NameScore[]
   decisions: AllDecisions
   parents: Profile[]
   totalNames: number
 }
 
-function NameList({ entries }: { entries: NameEntry[] }) {
+function ScoreRow({ score }: { score: NameScore }) {
+  const { entry, likedBy, parentLikes, guestLikes, isFullMatch } = score
+
+  const parentNames = likedBy.filter((profile) => profile.role === 'parent').map((p) => p.name)
+  const guestNames = likedBy.filter((profile) => profile.role === 'guest').map((p) => p.name)
+
   return (
-    <ul className="match-list">
-      {entries.map((entry) => (
-        <li key={entry.id} className="match-item">
-          <div className={`match-avatar ${entry.gender === 'F' ? 'badge-f' : 'badge-m'}`}>
-            {entry.gender === 'F' ? '♀' : '♂'}
-          </div>
-          <div>
-            <p className="match-name">{entry.name}</p>
-            <p className="match-meaning">{entry.meaning}</p>
-            {entry.suggestedBy && <p className="torcida-author">sugerido por {entry.suggestedBy}</p>}
-          </div>
-        </li>
-      ))}
-    </ul>
+    <li className={`score-item ${isFullMatch ? 'score-item-match' : ''}`}>
+      <div className={`match-avatar ${entry.gender === 'F' ? 'badge-f' : 'badge-m'}`}>
+        {entry.gender === 'F' ? '♀' : '♂'}
+      </div>
+
+      <div className="score-body">
+        <p className="match-name">
+          {entry.name}
+          {isFullMatch && <span className="score-match-tag">💘 match</span>}
+        </p>
+        <p className="match-meaning">{entry.meaning}</p>
+        <p className="score-who">
+          {parentNames.length > 0 && <span className="score-who-parents">{parentNames.join(' · ')}</span>}
+          {guestNames.length > 0 && (
+            <span className="score-who-guests">
+              {parentNames.length > 0 ? ' · ' : ''}
+              {guestNames.length <= 2 ? guestNames.join(' · ') : `${guestNames.length} da torcida`}
+            </span>
+          )}
+        </p>
+      </div>
+
+      <div className="score-likes" title={`${likedBy.length} curtida(s)`}>
+        <span className="score-hearts">{'❤️'.repeat(Math.min(parentLikes, 2)) || '🤍'}</span>
+        <span className="score-count">
+          {likedBy.length}
+          {guestLikes > 0 && <small>+{guestLikes} torcida</small>}
+        </span>
+      </div>
+    </li>
   )
 }
 
-export function MatchesScreen({ matches, maybes, decisions, parents, totalNames }: Props) {
+export function MatchesScreen({ scoreboard, decisions, parents, totalNames }: Props) {
+  const fullMatches = scoreboard.filter((score) => score.isFullMatch).length
+
   return (
     <div className="screen">
-      <h2 className="screen-title">💘 Matches</h2>
+      <h2 className="screen-title">💘 Placar dos nomes</h2>
       <p className="screen-subtitle">
-        Nomes que {parents.map((parent) => parent.name).join(' e ') || 'o casal'} curtiram os dois
+        Todo nome que alguém curtiu e ninguém vetou, do mais curtido pro menos. &quot;Tanto faz&quot;
+        não soma nem tira — só não conta como curtida.
       </p>
 
       <div className="stats-row">
@@ -50,23 +72,24 @@ export function MatchesScreen({ matches, maybes, decisions, parents, totalNames 
         ))}
       </div>
 
-      {matches.length === 0 ? (
+      {scoreboard.length === 0 ? (
         <div className="empty-state">
           <p className="deck-empty-emoji">🤍</p>
-          <p>Ainda não há matches. Continuem deslizando!</p>
+          <p>Ninguém curtiu nenhum nome ainda. Continuem deslizando!</p>
         </div>
       ) : (
-        <NameList entries={matches} />
-      )}
-
-      {maybes.length > 0 && (
-        <section className="maybe-section">
-          <h3 className="torcida-heading">🤔 Talvez ({maybes.length})</h3>
-          <p className="screen-subtitle">
-            Ninguém vetou, mas pelo menos um de vocês marcou &quot;tanto faz&quot; — seguem na disputa.
+        <>
+          <p className="score-summary">
+            {fullMatches > 0
+              ? `${fullMatches} ${fullMatches === 1 ? 'nome com match completo' : 'nomes com match completo'} · ${scoreboard.length} na disputa`
+              : `${scoreboard.length} ${scoreboard.length === 1 ? 'nome na disputa' : 'nomes na disputa'}`}
           </p>
-          <NameList entries={maybes} />
-        </section>
+          <ul className="score-list">
+            {scoreboard.map((score) => (
+              <ScoreRow key={score.entry.id} score={score} />
+            ))}
+          </ul>
+        </>
       )}
     </div>
   )

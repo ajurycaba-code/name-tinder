@@ -1,12 +1,7 @@
 import type { NameEntry } from '../data/names'
-import type { AllDecisions, Decision } from '../types'
+import type { AllDecisions, Decision, Profile } from '../types'
 
-function decisionsOf(entry: NameEntry, decisions: AllDecisions, parentIds: string[]) {
-  return parentIds.map((id) => decisions[id]?.[entry.id])
-}
-
-// Um match é um nome curtido por TODOS os perfis do casal. Se ainda não existem
-// dois pais cadastrados, não há match possível.
+// Um match "cheio" é um nome curtido por TODOS os perfis do casal.
 export function computeMatches(
   allNames: NameEntry[],
   decisions: AllDecisions,
@@ -16,20 +11,60 @@ export function computeMatches(
   return allNames.filter((entry) => parentIds.every((id) => decisions[id]?.[entry.id] === 'like'))
 }
 
-// Um "talvez" é um nome que os dois já avaliaram, ninguém vetou, mas pelo menos
-// um deles marcou "tanto faz" — ou seja, continua na disputa sem ser um sim.
-export function computeMaybes(
+// --- Placar dos nomes ---
+// O "tanto faz" não vale como voto nem como veto: ele simplesmente não soma um
+// like. Então um nome fica na lista com quantos likes tiver — dois se os dois
+// curtiram, um se só uma pessoa curtiu — e some da lista se alguém do casal
+// vetou (disse não) ou se ninguém curtiu.
+
+export interface NameScore {
+  entry: NameEntry
+  likedBy: Profile[]
+  parentLikes: number
+  guestLikes: number
+  // Todos os pais curtiram — o match completo.
+  isFullMatch: boolean
+}
+
+export function computeScoreboard(
   allNames: NameEntry[],
   decisions: AllDecisions,
-  parentIds: string[],
-): NameEntry[] {
-  if (parentIds.length < 2) return []
-  return allNames.filter((entry) => {
-    const taken = decisionsOf(entry, decisions, parentIds)
-    if (taken.some((decision) => decision === undefined)) return false
-    if (taken.some((decision) => decision === 'dislike')) return false
-    return taken.some((decision) => decision === 'neutral')
-  })
+  profiles: Profile[],
+): NameScore[] {
+  const parents = profiles.filter((profile) => profile.role === 'parent')
+  const profileById = new Map(profiles.map((profile) => [profile.id, profile]))
+
+  const scores: NameScore[] = []
+
+  for (const entry of allNames) {
+    // Veto do casal tira o nome da lista. O "não" da torcida não veta.
+    if (parents.some((parent) => decisions[parent.id]?.[entry.id] === 'dislike')) continue
+
+    const likedBy: Profile[] = []
+    for (const [profileId, votes] of Object.entries(decisions)) {
+      if (votes[entry.id] !== 'like') continue
+      const profile = profileById.get(profileId)
+      if (profile) likedBy.push(profile)
+    }
+
+    if (likedBy.length === 0) continue
+
+    const parentLikes = likedBy.filter((profile) => profile.role === 'parent').length
+    scores.push({
+      entry,
+      likedBy,
+      parentLikes,
+      guestLikes: likedBy.length - parentLikes,
+      isFullMatch: parents.length >= 2 && parentLikes === parents.length,
+    })
+  }
+
+  return scores.sort(
+    (a, b) =>
+      b.parentLikes - a.parentLikes ||
+      b.guestLikes - a.guestLikes ||
+      a.entry.name.localeCompare(b.entry.name, 'pt-BR'),
+  )
 }
 
 function countOf(decisions: AllDecisions, profileId: string, wanted: Decision): number {

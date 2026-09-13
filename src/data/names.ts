@@ -11,6 +11,8 @@ export interface NameEntry {
   custom?: boolean
   bicultural?: boolean
   creative?: boolean
+  // Nome de quem sugeriu (amigos, família ou o próprio casal)
+  suggestedBy?: string
 }
 
 // Lista curada com nomes historicamente populares no Brasil (base IBGE - Censo 2022 e

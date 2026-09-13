@@ -1,12 +1,12 @@
-import { BASE_NAMES, type Gender, type NameEntry } from '../data/names'
-import type { AllDecisions, Player, StoredState } from '../types'
+import { type Gender, type NameEntry } from '../data/names'
+import type { AllDecisions, Profile } from '../types'
 import type { TournamentState } from './tournament'
 
 const DECISIONS_KEY = 'nt_decisions_v1'
 const CUSTOM_NAMES_KEY = 'nt_custom_names_v1'
-const CURRENT_PLAYER_KEY = 'nt_current_player_v1'
-const LAST_SYNC_KEY = 'nt_last_sync_v1'
+const PROFILE_KEY = 'nt_profile_v1'
 const TOURNAMENT_KEY = 'nt_tournament_v1'
+const MIGRATED_KEY = 'nt_cloud_migrated_v1'
 
 export type TournamentsByGender = Partial<Record<Gender, TournamentState>>
 
@@ -49,63 +49,51 @@ export function saveCustomNames(names: NameEntry[]) {
   localStorage.setItem(CUSTOM_NAMES_KEY, JSON.stringify(names))
 }
 
-export function loadCurrentPlayer(): Player | null {
-  const raw = localStorage.getItem(CURRENT_PLAYER_KEY)
-  return raw as Player | null
-}
+// --- Sessão: qual perfil está usando o app neste aparelho ---
 
-export function saveCurrentPlayer(player: Player) {
-  localStorage.setItem(CURRENT_PLAYER_KEY, player)
-}
-
-export function loadLastSync(): string | null {
-  return localStorage.getItem(LAST_SYNC_KEY)
-}
-
-export function saveLastSync(iso: string) {
-  localStorage.setItem(LAST_SYNC_KEY, iso)
-}
-
-export function getAllNames(customNames: NameEntry[]): NameEntry[] {
-  return [...BASE_NAMES, ...customNames]
-}
-
-// --- Sincronização entre dispositivos (sem backend) ---
-// Gera um código texto (base64) com as decisões e nomes customizados locais,
-// para o parceiro colar no dispositivo dele e mesclar os dados.
-
-export function exportSyncCode(state: StoredState): string {
-  const json = JSON.stringify(state)
-  const bytes = new TextEncoder().encode(json)
-  let binary = ''
-  bytes.forEach((b) => {
-    binary += String.fromCharCode(b)
-  })
-  return btoa(binary)
-}
-
-export function parseSyncCode(code: string): StoredState {
-  const binary = atob(code.trim())
-  const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0))
-  const json = new TextDecoder().decode(bytes)
-  const parsed = JSON.parse(json)
-  if (!parsed || typeof parsed !== 'object' || !parsed.decisions || !parsed.customNames) {
-    throw new Error('Código inválido')
+export function loadProfile(): Profile | null {
+  try {
+    const raw = localStorage.getItem(PROFILE_KEY)
+    return raw ? (JSON.parse(raw) as Profile) : null
+  } catch {
+    return null
   }
-  return parsed as StoredState
 }
 
-export function mergeDecisions(local: AllDecisions, incoming: AllDecisions): AllDecisions {
-  const merged: AllDecisions = { ...local }
-  for (const player of Object.keys(incoming)) {
-    merged[player] = { ...(merged[player] ?? {}), ...incoming[player] }
+export function saveProfile(profile: Profile) {
+  localStorage.setItem(PROFILE_KEY, JSON.stringify(profile))
+}
+
+export function clearProfile() {
+  localStorage.removeItem(PROFILE_KEY)
+}
+
+// --- Migração única dos dados locais antigos para a nuvem ---
+
+export function wasMigrated(profileId: string): boolean {
+  try {
+    const raw = localStorage.getItem(MIGRATED_KEY)
+    const done = raw ? (JSON.parse(raw) as string[]) : []
+    return done.includes(profileId)
+  } catch {
+    return false
   }
-  return merged
 }
 
-export function mergeCustomNames(local: NameEntry[], incoming: NameEntry[]): NameEntry[] {
-  const byId = new Map<string, NameEntry>()
-  for (const n of local) byId.set(n.id, n)
-  for (const n of incoming) if (!byId.has(n.id)) byId.set(n.id, n)
-  return [...byId.values()]
+export function markMigrated(profileId: string) {
+  try {
+    const raw = localStorage.getItem(MIGRATED_KEY)
+    const done = raw ? (JSON.parse(raw) as string[]) : []
+    if (!done.includes(profileId)) {
+      localStorage.setItem(MIGRATED_KEY, JSON.stringify([...done, profileId]))
+    }
+  } catch {
+    localStorage.setItem(MIGRATED_KEY, JSON.stringify([profileId]))
+  }
+}
+
+// Decisões antigas ficavam guardadas pelo nome do jogador ("Fabiana" / "Aju"),
+// que no modo nuvem vira o id do perfil.
+export function legacyDecisionsFor(playerName: string): Record<string, 'like' | 'dislike'> {
+  return loadDecisions()[playerName] ?? {}
 }

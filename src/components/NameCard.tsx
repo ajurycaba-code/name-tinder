@@ -25,6 +25,7 @@ export function NameCard({ entry, dragX = 0 }: Props) {
 
       {entry.bicultural && <div className="name-card-bicultural">🇧🇷 + 🇺🇸 nome bicultural</div>}
       {entry.creative && <div className="name-card-creative">✨ nome exclusivo da família</div>}
+      {entry.suggestedBy && <div className="name-card-suggested">💌 sugerido por {entry.suggestedBy}</div>}
 
       <h2 className="name-card-name">{entry.name}</h2>
 

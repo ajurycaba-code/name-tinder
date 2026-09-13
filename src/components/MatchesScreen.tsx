@@ -1,26 +1,29 @@
 import type { NameEntry } from '../data/names'
-import { PLAYERS, type AllDecisions } from '../types'
+import type { AllDecisions, Profile } from '../types'
 import { decidedCount, likedCount } from '../utils/matches'
 
 interface Props {
   matches: NameEntry[]
   decisions: AllDecisions
+  parents: Profile[]
   totalNames: number
 }
 
-export function MatchesScreen({ matches, decisions, totalNames }: Props) {
+export function MatchesScreen({ matches, decisions, parents, totalNames }: Props) {
   return (
     <div className="screen">
       <h2 className="screen-title">💘 Matches</h2>
-      <p className="screen-subtitle">Nomes que Fabiana e Aju curtiram os dois</p>
+      <p className="screen-subtitle">
+        Nomes que {parents.map((parent) => parent.name).join(' e ') || 'o casal'} curtiram os dois
+      </p>
 
       <div className="stats-row">
-        {PLAYERS.map((player) => (
-          <div key={player} className="stat-card">
-            <p className="stat-value">{likedCount(decisions, player)}</p>
-            <p className="stat-label">curtidos por {player}</p>
+        {parents.map((parent) => (
+          <div key={parent.id} className="stat-card">
+            <p className="stat-value">{likedCount(decisions, parent.id)}</p>
+            <p className="stat-label">curtidos por {parent.name}</p>
             <p className="stat-sub">
-              {decidedCount(decisions, player)}/{totalNames} avaliados
+              {decidedCount(decisions, parent.id)}/{totalNames} avaliados
             </p>
           </div>
         ))}
@@ -41,6 +44,7 @@ export function MatchesScreen({ matches, decisions, totalNames }: Props) {
               <div>
                 <p className="match-name">{entry.name}</p>
                 <p className="match-meaning">{entry.meaning}</p>
+                {entry.suggestedBy && <p className="torcida-author">sugerido por {entry.suggestedBy}</p>}
               </div>
             </li>
           ))}

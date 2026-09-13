@@ -36,8 +36,9 @@ aparelho vê tudo em tempo quase real, sem precisar sincronizar nada à mão.
 - **Nomes criativos exclusivos**: uma lista à parte inspirada nos nomes dos próprios pais —
   variações, combinações e homenagens aos nomes e sobrenomes da família, além de nomes de
   origem tupi-guarani. Esses cards aparecem com o selinho ✨ nome exclusivo da família.
-- **Login por telefone**: entra com o número, sem senha. Se for a primeira vez, escolhe se é
-  um dos pais ou alguém da torcida. Da segunda vez em diante, só o telefone já entra.
+- **Login por telefone**: entra com o número, sem senha. Quem é novo se cadastra com o nome
+  e entra como torcida; os perfis do casal já têm telefone cadastrado e entram direto, sem
+  que ninguém consiga assumir o lugar deles pela tela de cadastro.
 - **Matches**: tela que mostra só os nomes que os dois curtiram, com estatísticas de quantos
   cada um já avaliou/curtiu.
 - **Copa dos Nomes**: chega de indecisão! Pega todos os matches (separados por Meninas e

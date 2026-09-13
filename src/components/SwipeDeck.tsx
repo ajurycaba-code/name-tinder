@@ -8,6 +8,10 @@ interface Props {
   onDecision: (entry: NameEntry, decision: Decision) => void
   onUndo?: () => void
   canUndo: boolean
+  // A torcida só curte ou passa — sem o "tanto faz" do casal.
+  allowNeutral?: boolean
+  likeStamp?: string
+  hint?: string
 }
 
 // Distância (px) a partir da qual soltar o card já conta como decisão.
@@ -26,7 +30,15 @@ interface Point {
 
 const ORIGIN: Point = { x: 0, y: 0 }
 
-export function SwipeDeck({ queue, onDecision, onUndo, canUndo }: Props) {
+export function SwipeDeck({
+  queue,
+  onDecision,
+  onUndo,
+  canUndo,
+  allowNeutral = true,
+  likeStamp,
+  hint = 'Arraste para os lados, ou para cima se tanto faz',
+}: Props) {
   const [drag, setDrag] = useState<Point>(ORIGIN)
   const [dragging, setDragging] = useState(false)
   const [flyTo, setFlyTo] = useState<Point | null>(null)
@@ -75,6 +87,7 @@ export function SwipeDeck({ queue, onDecision, onUndo, canUndo }: Props) {
     }
 
     // Só para cima vale como "tanto faz" — para baixo o card volta pro lugar.
+    if (!allowNeutral) return null
     if (offset.y < -UP_THRESHOLD || (speed.y < -FLING_SPEED && offset.y < -20)) return 'neutral'
     return null
   }
@@ -188,7 +201,7 @@ export function SwipeDeck({ queue, onDecision, onUndo, canUndo }: Props) {
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerUp}
         >
-          <NameCard entry={top} dragX={drag.x} dragY={drag.y} />
+          <NameCard entry={top} dragX={drag.x} dragY={drag.y} likeStamp={likeStamp} />
         </div>
       </div>
 
@@ -199,20 +212,22 @@ export function SwipeDeck({ queue, onDecision, onUndo, canUndo }: Props) {
         <button className="deck-btn deck-btn-nope" onClick={() => commit('dislike')} aria-label="Passar">
           ✕
         </button>
-        <button
-          className="deck-btn deck-btn-maybe"
-          onClick={() => commit('neutral')}
-          aria-label="Tanto faz"
-          title="Tanto faz — não veta o nome, mas também não é um sim"
-        >
-          ~
-        </button>
+        {allowNeutral && (
+          <button
+            className="deck-btn deck-btn-maybe"
+            onClick={() => commit('neutral')}
+            aria-label="Tanto faz"
+            title="Tanto faz — não veta o nome, mas também não é um sim"
+          >
+            ~
+          </button>
+        )}
         <button className="deck-btn deck-btn-like" onClick={() => commit('like')} aria-label="Curtir">
           ♥
         </button>
       </div>
 
-      <p className="deck-hint">Arraste para os lados, ou para cima se tanto faz</p>
+      <p className="deck-hint">{hint}</p>
     </div>
   )
 }

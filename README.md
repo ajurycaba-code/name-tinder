@@ -9,8 +9,13 @@ aparelho vê tudo em tempo quase real, sem precisar sincronizar nada à mão.
 
 ## Funcionalidades
 
-- **Swipe estilo Tinder**: arraste o card ou use os botões ❤️ / ✕. Cada nome traz origem,
-  significado e uma curiosidade/estatística.
+- **Swipe estilo Tinder**: arraste o card para os lados (❤️ / ✕) ou para cima, se tanto
+  faz — ou use os botões. O card acompanha o arremesso e sai voando na direção do gesto;
+  um peteleco curto e rápido já conta. Cada nome traz origem, significado e uma
+  curiosidade/estatística.
+- **Três respostas por nome**: sim, não, e **tanto faz** — que não veta o nome nem o tira da
+  disputa, só não conta como um sim. Nomes em que ninguém vetou mas alguém marcou "tanto
+  faz" aparecem numa seção **🤔 Talvez** na tela de Matches.
 - **~700 nomes** (quase 300 populares no Brasil + mais de 300 populares nos EUA e em alta ao
   redor do mundo + 72 nomes compostos biculturais + 30 nomes criativos exclusivos),
   intercalados no baralho, com filtro por Meninas / Meninos / Todos.

@@ -206,13 +206,17 @@ textarea {
   user-select: none;
 }
 
-.deck-card-behind {
-  transform: scale(0.95) translateY(10px);
-  opacity: 0.7;
-}
-
 .deck-card-top {
   cursor: grab;
+  will-change: transform;
+}
+
+.deck-card-grabbed {
+  cursor: grabbing;
+}
+
+.deck-card-grabbed .name-card {
+  box-shadow: 0 26px 60px rgba(43, 32, 50, 0.26);
 }
 
 .name-card {
@@ -328,6 +332,14 @@ textarea {
   transform: rotate(18deg);
 }
 
+.name-card-stamp-maybe {
+  /* No centro do card: arrastando para cima, os selos do topo sairiam da tela. */
+  top: 44%;
+  left: 50%;
+  color: #c08a2e;
+  transform: translateX(-50%) rotate(-4deg);
+}
+
 .deck-empty {
   text-align: center;
   padding: 60px 20px;
@@ -346,7 +358,7 @@ textarea {
 /* Deck action buttons */
 .deck-actions {
   display: flex;
-  gap: 18px;
+  gap: 14px;
   align-items: center;
 }
 
@@ -382,6 +394,32 @@ textarea {
   width: 48px;
   height: 48px;
   font-size: 1.1rem;
+}
+
+.deck-btn-maybe {
+  color: #c08a2e;
+  width: 56px;
+  height: 56px;
+  font-size: 1.7rem;
+  font-weight: 700;
+  line-height: 1;
+  padding-bottom: 6px;
+}
+
+.deck-btn {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.deck-btn:active:not(:disabled) {
+  transform: scale(0.88);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+.deck-hint {
+  margin: -6px 0 0;
+  font-size: 0.74rem;
+  color: var(--muted);
+  text-align: center;
 }
 
 .deck-btn:disabled {
@@ -909,6 +947,12 @@ textarea {
   color: #d1447a;
   font-size: 0.85rem;
   margin: 8px 0 0;
+}
+
+.maybe-section {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid #eee0e6;
 }
 
 /* Nome completo */

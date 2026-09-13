@@ -3,11 +3,15 @@ import type { NameEntry } from '../data/names'
 interface Props {
   entry: NameEntry
   dragX?: number
+  dragY?: number
 }
 
-export function NameCard({ entry, dragX = 0 }: Props) {
-  const likeOpacity = Math.min(Math.max(dragX / 100, 0), 1)
-  const nopeOpacity = Math.min(Math.max(-dragX / 100, 0), 1)
+export function NameCard({ entry, dragX = 0, dragY = 0 }: Props) {
+  // O gesto vertical só "vence" o horizontal quando é claramente para cima.
+  const vertical = Math.abs(dragY) > Math.abs(dragX)
+  const likeOpacity = vertical ? 0 : Math.min(Math.max(dragX / 100, 0), 1)
+  const nopeOpacity = vertical ? 0 : Math.min(Math.max(-dragX / 100, 0), 1)
+  const maybeOpacity = vertical ? Math.min(Math.max(-dragY / 90, 0), 1) : 0
 
   return (
     <div className="name-card">
@@ -16,6 +20,9 @@ export function NameCard({ entry, dragX = 0 }: Props) {
       </div>
       <div className="name-card-stamp name-card-stamp-nope" style={{ opacity: nopeOpacity }}>
         PASSO
+      </div>
+      <div className="name-card-stamp name-card-stamp-maybe" style={{ opacity: maybeOpacity }}>
+        TANTO FAZ
       </div>
 
       <div className={`name-card-badge ${entry.gender === 'F' ? 'badge-f' : 'badge-m'}`}>

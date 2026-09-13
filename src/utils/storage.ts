@@ -1,5 +1,5 @@
 import { type Gender, type NameEntry } from '../data/names'
-import type { AllDecisions, Profile } from '../types'
+import type { AllDecisions, PlayerDecisions, Profile } from '../types'
 import type { TournamentState } from './tournament'
 
 const DECISIONS_KEY = 'nt_decisions_v1'
@@ -94,6 +94,6 @@ export function markMigrated(profileId: string) {
 
 // Decisões antigas ficavam guardadas pelo nome do jogador ("Fabiana" / "Aju"),
 // que no modo nuvem vira o id do perfil.
-export function legacyDecisionsFor(playerName: string): Record<string, 'like' | 'dislike'> {
+export function legacyDecisionsFor(playerName: string): PlayerDecisions {
   return loadDecisions()[playerName] ?? {}
 }

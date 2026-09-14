@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { NameEntry } from '../data/names'
 import type { AllDecisions, Decision, Profile } from '../types'
-import { decidedCount, likedCount, neutralCount, type NameScore } from '../utils/matches'
+import { countsFor, type NameScore } from '../utils/matches'
+import type { GenderFilter } from '../utils/queue'
 import { NameDetailModal } from './NameDetailModal'
 
 interface Props {
@@ -9,10 +10,16 @@ interface Props {
   decisions: AllDecisions
   parents: Profile[]
   profile: Profile
-  totalNames: number
+  allNames: NameEntry[]
   onVote: (entry: NameEntry, decision: Decision) => void
   onClearVote: (nameId: string) => void
 }
+
+const FILTROS: { key: GenderFilter; label: string }[] = [
+  { key: 'all', label: 'Todos' },
+  { key: 'F', label: '♀ Meninas' },
+  { key: 'M', label: '♂ Meninos' },
+]
 
 interface RowProps {
   score: NameScore
@@ -78,13 +85,24 @@ export function MatchesScreen({
   decisions,
   parents,
   profile,
-  totalNames,
+  allNames,
   onVote,
   onClearVote,
 }: Props) {
   const [aberto, setAberto] = useState<NameEntry | null>(null)
+  const [genero, setGenero] = useState<GenderFilter>('all')
 
-  const fullMatches = scoreboard.filter((score) => score.isFullMatch).length
+  const visivel = useMemo(
+    () => (genero === 'all' ? scoreboard : scoreboard.filter((s) => s.entry.gender === genero)),
+    [scoreboard, genero],
+  )
+  // As estatísticas seguem o mesmo filtro, senão os números não batem com a lista.
+  const nomesDoFiltro = useMemo(
+    () => (genero === 'all' ? allNames : allNames.filter((n) => n.gender === genero)),
+    [allNames, genero],
+  )
+
+  const fullMatches = visivel.filter((score) => score.isFullMatch).length
   const myVotes = decisions[profile.id] ?? {}
 
   return (
@@ -95,33 +113,51 @@ export function MatchesScreen({
         ver o card inteiro, ou use o coração para curtir na hora.
       </p>
 
-      <div className="stats-row">
-        {parents.map((parent) => (
-          <div key={parent.id} className="stat-card">
-            <p className="stat-value">{likedCount(decisions, parent.id)}</p>
-            <p className="stat-label">curtidos por {parent.name}</p>
-            <p className="stat-sub">
-              {neutralCount(decisions, parent.id)} tanto faz ·{' '}
-              {decidedCount(decisions, parent.id)}/{totalNames} avaliados
-            </p>
-          </div>
+      <div className="gender-filter">
+        {FILTROS.map((filtro) => (
+          <button
+            key={filtro.key}
+            className={`filter-chip ${genero === filtro.key ? 'filter-chip-active' : ''}`}
+            onClick={() => setGenero(filtro.key)}
+          >
+            {filtro.label}
+          </button>
         ))}
       </div>
 
-      {scoreboard.length === 0 ? (
+      <div className="stats-row">
+        {parents.map((parent) => {
+          const c = countsFor(decisions, parent.id, nomesDoFiltro)
+          return (
+            <div key={parent.id} className="stat-card">
+              <p className="stat-value">{c.liked}</p>
+              <p className="stat-label">curtidos por {parent.name}</p>
+              <p className="stat-sub">
+                {c.neutral} tanto faz · {c.decided}/{c.total} avaliados
+              </p>
+            </div>
+          )
+        })}
+      </div>
+
+      {visivel.length === 0 ? (
         <div className="empty-state">
           <p className="deck-empty-emoji">🤍</p>
-          <p>Ninguém curtiu nenhum nome ainda. Continuem deslizando!</p>
+          <p>
+            {genero === 'all'
+              ? 'Ninguém curtiu nenhum nome ainda. Continuem deslizando!'
+              : `Nenhum nome de ${genero === 'F' ? 'menina' : 'menino'} curtido ainda.`}
+          </p>
         </div>
       ) : (
         <>
           <p className="score-summary">
             {fullMatches > 0
-              ? `${fullMatches} ${fullMatches === 1 ? 'nome com match completo' : 'nomes com match completo'} · ${scoreboard.length} na disputa`
-              : `${scoreboard.length} ${scoreboard.length === 1 ? 'nome na disputa' : 'nomes na disputa'}`}
+              ? `${fullMatches} ${fullMatches === 1 ? 'nome com match completo' : 'nomes com match completo'} · ${visivel.length} na disputa`
+              : `${visivel.length} ${visivel.length === 1 ? 'nome na disputa' : 'nomes na disputa'}`}
           </p>
           <ul className="score-list">
-            {scoreboard.map((score) => (
+            {visivel.map((score) => (
               <ScoreRow
                 key={score.entry.id}
                 score={score}

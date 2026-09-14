@@ -46,6 +46,34 @@ export async function select<T>(table: string, query?: Query): Promise<T[]> {
   return parse<T>(response)
 }
 
+// O PostgREST corta toda resposta em 1000 linhas (o `db-max-rows` que o Supabase
+// usa por padrão) e não avisa: vem uma lista aparentemente completa, só que
+// truncada. Como a tabela de votos passa fácil desse tamanho, tudo que é lido em
+// massa precisa paginar — senão o app simplesmente não enxerga parte dos votos e
+// os nomes correspondentes voltam pra fila como se nunca tivessem sido avaliados.
+//
+// `orderBy` é obrigatório na prática: sem uma ordem estável, paginar por offset
+// pode repetir ou pular linhas entre as páginas.
+const PAGE_SIZE = 1000
+const MAX_PAGES = 50
+
+export async function selectAll<T>(table: string, orderBy: string, query: Query = {}): Promise<T[]> {
+  const rows: T[] = []
+
+  for (let page = 0; page < MAX_PAGES; page++) {
+    const batch = await select<T>(table, {
+      ...query,
+      order: orderBy,
+      limit: String(PAGE_SIZE),
+      offset: String(page * PAGE_SIZE),
+    })
+    rows.push(...batch)
+    if (batch.length < PAGE_SIZE) return rows
+  }
+
+  return rows
+}
+
 export async function insert<T>(table: string, rows: unknown): Promise<T[]> {
   const response = await fetch(buildUrl(table), {
     method: 'POST',

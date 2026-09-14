@@ -19,7 +19,9 @@ import {
 } from '../utils/fullName'
 
 interface Props {
-  matches: NameEntry[]
+  // Nomes do placar — é de onde saem as sugestões de primeiro nome e de onde
+  // o campeão da copa precisa ser encontrado.
+  names: NameEntry[]
 }
 
 const GENDERS: { key: Gender; label: string; emoji: string }[] = [
@@ -36,7 +38,7 @@ function slugifyExtra(word: string) {
     .replace(/(^-|-$)/g, '')}`
 }
 
-export function FullNameScreen({ matches }: Props) {
+export function FullNameScreen({ names }: Props) {
   const { byGender } = useTournament()
   const [gender, setGender] = useState<Gender>('F')
   const [draft, setDraft] = useState<FullNameDraft>(EMPTY_DRAFT)
@@ -49,11 +51,11 @@ export function FullNameScreen({ matches }: Props) {
 
   const championId = byGender[gender]?.champion ?? null
   const suggestions = useMemo(() => {
-    const forGender = matches.filter((entry) => entry.gender === gender)
+    const forGender = names.filter((entry) => entry.gender === gender)
     const champion = forGender.find((entry) => entry.id === championId)
     const rest = forGender.filter((entry) => entry.id !== championId)
     return champion ? [champion, ...rest] : rest
-  }, [matches, gender, championId])
+  }, [names, gender, championId])
 
   function update(patch: Partial<FullNameDraft>) {
     setDraft((prev) => ({ ...prev, ...patch }))
@@ -162,7 +164,9 @@ export function FullNameScreen({ matches }: Props) {
           </div>
         )}
         {suggestions.length === 0 && (
-          <p className="fn-hint">Sem matches de {gender === 'F' ? 'meninas' : 'meninos'} ainda — digite à mão.</p>
+          <p className="fn-hint">
+            Nenhum nome de {gender === 'F' ? 'menina' : 'menino'} no placar ainda — digite à mão.
+          </p>
         )}
       </section>
 

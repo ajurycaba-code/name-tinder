@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { Gender, NameEntry } from '../data/names'
 import { useTournament } from '../hooks/useTournament'
+import type { NameScore } from '../utils/matches'
 import { getCurrentMatchup, totalMatchupsInRound } from '../utils/tournament'
 
 interface Props {
-  matches: NameEntry[]
+  // Todo o placar, não só os matches completos: qualquer nome que alguém
+  // curtiu e ninguém vetou pode disputar.
+  scoreboard: NameScore[]
 }
 
 const GENDERS: { key: Gender; label: string; emoji: string }[] = [
@@ -12,12 +15,19 @@ const GENDERS: { key: Gender; label: string; emoji: string }[] = [
   { key: 'M', label: 'Meninos', emoji: '♂' },
 ]
 
-export function CupScreen({ matches }: Props) {
+export function CupScreen({ scoreboard }: Props) {
   const { byGender, start, pick, undo, reset } = useTournament()
   const [activeGender, setActiveGender] = useState<Gender>('F')
 
-  const byId = useMemo(() => new Map(matches.map((entry) => [entry.id, entry])), [matches])
-  const matchesForGender = useMemo(() => matches.filter((entry) => entry.gender === activeGender), [matches, activeGender])
+  const byId = useMemo(
+    () => new Map(scoreboard.map((score) => [score.entry.id, score.entry])),
+    [scoreboard],
+  )
+  // Mais curtidos primeiro: se a copa for recomeçada, entram na mesma ordem.
+  const doGenero = useMemo(
+    () => scoreboard.filter((score) => score.entry.gender === activeGender),
+    [scoreboard, activeGender],
+  )
 
   const state = byGender[activeGender]
   const matchup = state ? getCurrentMatchup(state) : null
@@ -34,7 +44,7 @@ export function CupScreen({ matches }: Props) {
     <div className="screen">
       <h2 className="screen-title">🏆 Copa dos Nomes</h2>
       <p className="screen-subtitle">
-        Coloquem os matches de vocês pra se enfrentar até sobrar só um campeão — um nome de menina e um de menino.
+        Todos os nomes do placar se enfrentam até sobrar só um campeão — um de menina e um de menino.
       </p>
 
       <div className="gender-filter">
@@ -51,10 +61,17 @@ export function CupScreen({ matches }: Props) {
 
       {!state && (
         <CupStart
-          count={matchesForGender.length}
+          count={doGenero.length}
           genderLabel={GENDERS.find((g) => g.key === activeGender)!.label}
-          onStart={() => start(activeGender, matchesForGender.map((entry) => entry.id))}
+          onStart={() => start(activeGender, doGenero.map((score) => score.entry.id))}
         />
+      )}
+
+      {state && state.poolSize !== undefined && doGenero.length > state.poolSize && (
+        <p className="cup-stale">
+          O placar cresceu desde que essa copa começou ({state.poolSize} → {doGenero.length} nomes).
+          Recomece para incluir os novos.
+        </p>
       )}
 
       {state && !state.champion && matchup?.type === 'pair' && (
@@ -67,6 +84,7 @@ export function CupScreen({ matches }: Props) {
           canUndo={Boolean(state.previous)}
           onPick={(id) => pick(activeGender, id)}
           onUndo={() => undo(activeGender)}
+          onRestart={() => reset(activeGender)}
         />
       )}
 
@@ -92,8 +110,8 @@ function CupStart({ count, genderLabel, onStart }: { count: number; genderLabel:
       <div className="empty-state">
         <p className="deck-empty-emoji">🏆</p>
         <p>
-          Precisam de pelo menos 2 matches de {genderLabel.toLowerCase()} pra começar a copa. Vocês têm {count} até
-          agora — continuem no Swipe!
+          Precisam de pelo menos 2 nomes de {genderLabel.toLowerCase()} no placar pra começar a copa. Vocês têm{' '}
+          {count} até agora — continuem no Swipe!
         </p>
       </div>
     )
@@ -119,6 +137,7 @@ function Matchup({
   canUndo,
   onPick,
   onUndo,
+  onRestart,
 }: {
   entryA: NameEntry
   entryB: NameEntry
@@ -128,6 +147,7 @@ function Matchup({
   canUndo: boolean
   onPick: (id: string) => void
   onUndo: () => void
+  onRestart: () => void
 }) {
   return (
     <div className="cup-round">
@@ -147,9 +167,14 @@ function Matchup({
         </button>
       </div>
 
-      <button className="deck-btn-undo cup-undo" onClick={onUndo} disabled={!canUndo} aria-label="Desfazer">
-        ↺ Desfazer
-      </button>
+      <div className="cup-controls">
+        <button className="deck-btn-undo cup-undo" onClick={onUndo} disabled={!canUndo} aria-label="Desfazer">
+          ↺ Desfazer
+        </button>
+        <button className="deck-btn-undo cup-undo" onClick={onRestart}>
+          ⟳ Recomeçar
+        </button>
+      </div>
     </div>
   )
 }

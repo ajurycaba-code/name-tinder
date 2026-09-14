@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import type { NameEntry } from './data/names'
+import type { Decision } from './types'
 import { CupScreen } from './components/CupScreen'
 import { FullNameScreen } from './components/FullNameScreen'
 import { LoginGate } from './components/LoginGate'
@@ -87,6 +88,19 @@ export default function App() {
     </header>
   )
 
+  // Grava o voto e comemora se ele for o que fecha o match. Usada tanto pelo
+  // baralho quanto pelo placar.
+  function registrarVoto(entry: NameEntry, decision: Decision) {
+    const outros = data.parents.filter((parent) => parent.id !== profile.id)
+    const fechaMatch =
+      decision === 'like' &&
+      outros.length > 0 &&
+      outros.every((parent) => data.decisions[parent.id]?.[entry.id] === 'like')
+
+    data.decide(entry.id, decision)
+    if (fechaMatch) setCelebrando(entry)
+  }
+
   const torcida = (
     <TorcidaScreen
       profile={profile}
@@ -149,16 +163,8 @@ export default function App() {
               queue={queue}
               canUndo={Boolean(lastUndo)}
               onDecision={(entry, decision) => {
-                // Antes de gravar: este "sim" é o que fecha o match?
-                const outros = data.parents.filter((parent) => parent.id !== profile.id)
-                const fechaMatch =
-                  decision === 'like' &&
-                  outros.length > 0 &&
-                  outros.every((parent) => data.decisions[parent.id]?.[entry.id] === 'like')
-
-                data.decide(entry.id, decision)
+                registrarVoto(entry, decision)
                 setLastUndo(entry.id)
-                if (fechaMatch) setCelebrando(entry)
               }}
               onUndo={() => {
                 if (lastUndo) {
@@ -175,7 +181,10 @@ export default function App() {
             scoreboard={data.scoreboard}
             decisions={data.decisions}
             parents={data.parents}
+            profile={profile}
             totalNames={data.allNames.length}
+            onVote={registrarVoto}
+            onClearVote={data.undoDecide}
           />
         )}
 

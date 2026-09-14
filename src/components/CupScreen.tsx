@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import type { Gender, NameEntry } from '../data/names'
 import { useTournament } from '../hooks/useTournament'
 import type { NameScore } from '../utils/matches'
-import { getCurrentMatchup, totalMatchupsInRound } from '../utils/tournament'
+import { computeStandings, getCurrentMatchup, totalMatchupsInRound, type Standing } from '../utils/tournament'
 
 interface Props {
   // Todo o placar, não só os matches completos: qualquer nome que alguém
@@ -98,7 +98,12 @@ export function CupScreen({ scoreboard }: Props) {
       )}
 
       {state?.champion && (
-        <ChampionCard entry={byId.get(state.champion)!} onRestart={() => reset(activeGender)} />
+        <ChampionCard
+          entry={byId.get(state.champion)!}
+          standings={computeStandings(state)}
+          byId={byId}
+          onRestart={() => reset(activeGender)}
+        />
       )}
     </div>
   )
@@ -179,18 +184,64 @@ function Matchup({
   )
 }
 
-function ChampionCard({ entry, onRestart }: { entry: NameEntry; onRestart: () => void }) {
+const MEDALHAS: Record<number, string> = { 1: '🥇', 2: '🥈', 3: '🥉' }
+
+function ChampionCard({
+  entry,
+  standings,
+  byId,
+  onRestart,
+}: {
+  entry: NameEntry
+  standings: Standing[]
+  byId: Map<string, NameEntry>
+  onRestart: () => void
+}) {
+  const feminino = entry.gender === 'F'
+
   return (
-    <div className="champion-card">
-      <p className="champion-trophy">🏆</p>
-      <p className="champion-label">{entry.gender === 'F' ? 'Campeã da copa' : 'Campeão da copa'}</p>
-      <h3 className="champion-name">{entry.name}</h3>
-      <p className="name-card-origin">{entry.origin}</p>
-      <p className="name-card-meaning">"{entry.meaning}"</p>
-      <p className="name-card-fact">💡 {entry.fact}</p>
-      <button className="primary-btn" onClick={onRestart}>
-        Recomeçar copa
-      </button>
-    </div>
+    <>
+      <div className="champion-card">
+        <p className="champion-trophy">🏆</p>
+        <p className="champion-label">{feminino ? 'Campeã da copa' : 'Campeão da copa'}</p>
+        <h3 className="champion-name">{entry.name}</h3>
+        <p className="name-card-origin">{entry.origin}</p>
+        <p className="name-card-meaning">"{entry.meaning}"</p>
+        <p className="name-card-fact">💡 {entry.fact}</p>
+        <button className="primary-btn" onClick={onRestart}>
+          Recomeçar copa
+        </button>
+      </div>
+
+      {standings.length > 1 && (
+        <section className="standings">
+          <h3 className="torcida-heading">🏅 Classificação</h3>
+          <p className="screen-subtitle">
+            Quem chegou mais longe na copa. Nomes que caíram na mesma fase dividem a posição.
+          </p>
+          <ol className="standings-list">
+            {standings.map((standing) => {
+              const nome = byId.get(standing.id)
+              if (!nome) return null
+              return (
+                <li key={standing.id} className={`standings-item ${standing.position === 1 ? 'standings-item-top' : ''}`}>
+                  <span className="standings-pos">
+                    {MEDALHAS[standing.position] ?? `${standing.position}º`}
+                  </span>
+                  <span className="standings-name">{nome.name}</span>
+                  <span className="standings-label">
+                    {standing.position === 1
+                      ? nome.gender === 'F'
+                        ? 'campeã'
+                        : 'campeão'
+                      : standing.label}
+                  </span>
+                </li>
+              )
+            })}
+          </ol>
+        </section>
+      )}
+    </>
   )
 }

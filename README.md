@@ -45,7 +45,9 @@ aparelho vê tudo em tempo quase real, sem precisar sincronizar nada à mão.
   cada um já avaliou/curtiu.
 - **Copa dos Nomes**: chega de indecisão! Pega todos os nomes do placar (separados por
   Meninas e Meninos) e faz um torneio eliminatório — escolham entre dois nomes por vez até
-  sobrar um campeão de cada gênero. Se o placar crescer depois que a copa começou, a tela
+  sobrar um campeão de cada gênero. No fim sai a **classificação completa**, não só o
+  primeiro lugar: quem chegou mais longe fica na frente, e quem caiu na mesma fase divide a
+  posição (1º, 2º, 3º, 3º, 5º, 5º...). Se o placar crescer depois que a copa começou, a tela
   avisa e dá pra recomeçar incluindo os novos.
 - **Nome completo**: monta o nome do bebê juntando o primeiro nome (dos matches ou do
   campeão da copa) com os sobrenomes das duas famílias, com controle de ordem, da partícula

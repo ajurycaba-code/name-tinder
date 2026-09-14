@@ -8,6 +8,9 @@ export interface TournamentSnapshot {
 
 export interface TournamentState extends TournamentSnapshot {
   previous: TournamentSnapshot | null
+  // Quantos nomes entraram quando a copa começou. Serve para avisar que o
+  // placar cresceu desde então. Opcional: copas salvas antes disso não têm.
+  poolSize?: number
 }
 
 export type Matchup = { type: 'pair'; a: string; b: string } | { type: 'bye'; a: string }
@@ -29,6 +32,7 @@ export function createTournament(ids: string[]): TournamentState {
     round: 1,
     champion: null,
     previous: null,
+    poolSize: ids.length,
   }
 }
 

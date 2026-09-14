@@ -188,9 +188,11 @@ export default function App() {
           />
         )}
 
-        {tab === 'cup' && <CupScreen matches={data.matches} />}
+        {tab === 'cup' && <CupScreen scoreboard={data.scoreboard} />}
 
-        {tab === 'fullname' && <FullNameScreen matches={data.matches} />}
+        {tab === 'fullname' && (
+          <FullNameScreen names={data.scoreboard.map((score) => score.entry)} />
+        )}
 
         {tab === 'torcida' && torcida}
       </main>

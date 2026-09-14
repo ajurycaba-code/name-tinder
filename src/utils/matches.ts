@@ -1,5 +1,5 @@
 import type { NameEntry } from '../data/names'
-import type { AllDecisions, Decision, Profile } from '../types'
+import type { AllDecisions, Profile } from '../types'
 
 // Um match "cheio" é um nome curtido por TODOS os perfis do casal.
 export function computeMatches(
@@ -74,18 +74,32 @@ export function computeScoreboard(
   )
 }
 
-function countOf(decisions: AllDecisions, profileId: string, wanted: Decision): number {
-  return Object.values(decisions[profileId] ?? {}).filter((decision) => decision === wanted).length
+export interface ProfileCounts {
+  liked: number
+  neutral: number
+  decided: number
+  total: number
 }
 
-export function likedCount(decisions: AllDecisions, profileId: string): number {
-  return countOf(decisions, profileId, 'like')
-}
+// Estatísticas de uma pessoa restritas a um conjunto de nomes — assim o placar
+// pode mostrar números que batem com o filtro de gênero que está na tela.
+export function countsFor(
+  decisions: AllDecisions,
+  profileId: string,
+  names: NameEntry[],
+): ProfileCounts {
+  const votes = decisions[profileId] ?? {}
+  let liked = 0
+  let neutral = 0
+  let decided = 0
 
-export function neutralCount(decisions: AllDecisions, profileId: string): number {
-  return countOf(decisions, profileId, 'neutral')
-}
+  for (const entry of names) {
+    const decision = votes[entry.id]
+    if (!decision) continue
+    decided++
+    if (decision === 'like') liked++
+    else if (decision === 'neutral') neutral++
+  }
 
-export function decidedCount(decisions: AllDecisions, profileId: string): number {
-  return Object.keys(decisions[profileId] ?? {}).length
+  return { liked, neutral, decided, total: names.length }
 }

@@ -182,7 +182,7 @@ export default function App() {
             decisions={data.decisions}
             parents={data.parents}
             profile={profile}
-            totalNames={data.allNames.length}
+            allNames={data.allNames}
             onVote={registrarVoto}
             onClearVote={data.undoDecide}
           />

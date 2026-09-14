@@ -23,7 +23,9 @@ aparelho vê tudo em tempo quase real, sem precisar sincronizar nada à mão.
 - **Três respostas por nome**: sim, não, e **tanto faz** — que não veta o nome nem o tira da
   disputa, só não conta como uma curtida.
 - **Placar dos nomes**: em vez de uma lista de "deu match ou não deu", a tela mostra todo
-  nome que alguém curtiu e ninguém do casal vetou, ordenado por número de curtidas. Os dois
+  nome que alguém curtiu e ninguém do casal vetou, ordenado por número de curtidas. Dá pra
+  votar por ali mesmo: o coração na linha curte na hora, e tocar no nome abre o card inteiro
+  (com significado, famosos e pronúncia) e os três botões de voto. Os dois
   curtiram, são duas curtidas; só um curtiu, é uma. As curtidas da torcida também entram na
   conta, separadas das do casal.
 - **~700 nomes** (quase 300 populares no Brasil + mais de 300 populares nos EUA e em alta ao

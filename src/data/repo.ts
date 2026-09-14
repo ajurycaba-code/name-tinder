@@ -76,10 +76,15 @@ const cloudRepo: Repo = {
   mode: 'cloud',
 
   async loadSnapshot() {
+    // Tudo aqui é paginado: o PostgREST trunca em 1000 linhas sem avisar, e a
+    // tabela de votos já passa disso. Ordens escolhidas para serem estáveis
+    // (terminam numa coluna única), senão a paginação por offset embaralha.
     const [profileRows, voteRows, suggestionRows] = await Promise.all([
-      api.select<ProfileRow>('profiles'),
-      api.select<VoteRow>('votes'),
-      api.select<SuggestionRow>('suggestions', { order: 'created_at.desc' }),
+      api.selectAll<ProfileRow>('profiles', 'created_at.asc,id.asc'),
+      api.selectAll<VoteRow>('votes', 'profile_id.asc,name_id.asc', {
+        select: 'profile_id,name_id,decision',
+      }),
+      api.selectAll<SuggestionRow>('suggestions', 'created_at.desc,id.asc'),
     ])
 
     const profiles = profileRows.map(toProfile)

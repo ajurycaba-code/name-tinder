@@ -15,6 +15,8 @@ export interface NameEntry {
   creative?: boolean
   // Escrito igual e natural nos dois idiomas, sem precisar de versão traduzida
   crosslingual?: boolean
+  // Idem, mas valendo também para o espanhol (implica crosslingual)
+  trilingual?: boolean
   // Pessoas conhecidas com esse nome
   famous?: string
   // Nome de quem sugeriu (amigos, família ou o próprio casal)
@@ -643,6 +645,72 @@ const MALE_INTL: Raw[] = [
   ['Sonny', 'Inglês', 'Termo carinhoso para "filhinho"', 'Ficou associado ao músico Sonny Bono, da dupla Sonny & Cher.'],
 ]
 
+// --- Nomes trilíngues (PT-BR + espanhol + inglês) ---
+// Critério deliberadamente severo: o nome tem que ser escrito EXATAMENTE igual nos
+// três idiomas, sem acento em nenhum deles, e ser reconhecido como nome próprio
+// pelas três culturas. Por isso ficaram de fora casos que só falham num detalhe:
+// Mario (Mário em português), Gloria (Glória), Victor (Víctor em espanhol),
+// Nicolas (Nicolás), Sebastian (Sebastián), Simon (Simón) e Maria (María).
+const TRILINGUAL_FEMALE: Raw[] = [
+  ['Isabel', 'Hebraico', 'Consagrada a Deus', 'É a forma original de Isabela, Isabella e Elizabeth, e a mais usada no espanhol.'],
+  ['Diana', 'Latim', 'Divina, luminosa', 'Diana é a deusa romana da caça e da Lua, e o nome não muda uma letra nos três idiomas.'],
+  ['Irene', 'Grego', 'Paz', 'Vem de Eirene, a deusa grega da paz.'],
+  ['Carmen', 'Latim/Hebraico', 'Canto, poema, ou jardim de Deus', 'Dá nome à ópera mais encenada do mundo, de Georges Bizet.'],
+  ['Celeste', 'Latim', 'Do céu, celestial', 'Nos três idiomas é nome próprio e também a palavra para um tom de azul-claro.'],
+  ['Flora', 'Latim', 'Flor, florescente', 'Flora é a deusa romana das flores e da primavera.'],
+  ['Teresa', 'Grego', 'Caçadora, ou aquela que colhe', 'Santa Teresa de Ávila e Madre Teresa de Calcutá levaram o nome para o mundo inteiro.'],
+  ['Sabrina', 'Celta/Latim', 'Aquela que vem do rio Severn', 'O nome nasceu de uma lenda sobre uma princesa do rio Severn, na Inglaterra.'],
+  ['Tamara', 'Hebraico', 'Palmeira, tamareira', 'A palmeira é símbolo de vitória e abundância em várias culturas.'],
+  ['Clarissa', 'Latim', 'A mais clara, a mais brilhante', 'É o superlativo de Clara, formado da mesma maneira nos três idiomas.'],
+  ['Miranda', 'Latim', 'Admirável, digna de admiração', 'Shakespeare criou o nome para a heroína de "A Tempestade".'],
+  ['Melina', 'Grego', 'Doce como mel', 'Vem de meli, mel em grego, a mesma raiz de Melissa.'],
+  ['Liliana', 'Latim', 'Lírio, flor de lis', 'Junta Lilian e Ana numa só palavra que soa natural nos três idiomas.'],
+  ['Angelina', 'Latim', 'Pequena mensageira, anjinho', 'Escreve-se igual nos três idiomas e ficou conhecido no mundo todo por Angelina Jolie.'],
+  ['Elvira', 'Germânico/Árabe', 'Nobre guardiã', 'Chegou à Península Ibérica com os visigodos e de lá se espalhou.'],
+  ['Esmeralda', 'Grego', 'Pedra preciosa verde', 'A pedra batizou a personagem de "O Corcunda de Notre-Dame".'],
+  ['Rita', 'Grego/Latim', 'Pérola', 'Nasceu como forma curta de Margarita e hoje vive sozinho nos três idiomas.'],
+  ['Alma', 'Latim', 'Alma, espírito, aquela que nutre', 'É a palavra "alma" em português e espanhol, e nome próprio em inglês desde o século XIX.'],
+  ['Dora', 'Grego', 'Presente, dádiva', 'É a parte final de Isadora e Teodora, e virou nome por conta própria.'],
+  ['Lena', 'Grego', 'Luz brilhante', 'Começou como apelido de Helena e Madalena e se tornou nome independente.'],
+  ['Mara', 'Hebraico/Aramaico', 'Senhora, ou amarga', 'É a raiz hebraica que também deu origem a Maria.'],
+  ['Viola', 'Latim', 'Violeta, a flor', 'É flor, é instrumento de corda e é personagem de Shakespeare em "Noite de Reis".'],
+  ['Paola', 'Latim', 'Pequena, humilde', 'É a forma italiana e espanhola de Paula, usada também em inglês.'],
+  ['Natasha', 'Russo/Latim', 'Nascida no dia de Natal', 'É o diminutivo russo de Natalia e se escreve igual nos três idiomas.'],
+  ['Oriana', 'Latim', 'Dourada, nascida do ouro', 'Apareceu em romances de cavalaria medievais e foi levado adiante pela jornalista Oriana Fallaci.'],
+  ['Linda', 'Germânico', 'Suave, doce, escudo', 'Em inglês é nome antigo e consagrado; em português e espanhol a palavra também quer dizer bonita.'],
+  ['Norma', 'Latim', 'Regra, modelo', 'Ficou famoso pela ópera de Bellini e por ser o nome de batismo de Marilyn Monroe.'],
+  ['Olga', 'Nórdico/Russo', 'Santa, abençoada, próspera', 'Chegou à Rússia com os vikings e de lá para o resto do mundo.'],
+]
+
+const TRILINGUAL_MALE: Raw[] = [
+  ['Santiago', 'Hebraico/Espanhol', 'Santo Iago, de São Tiago', 'Dá nome à capital do Chile e ao caminho de peregrinação de Compostela.'],
+  ['Manuel', 'Hebraico', 'Deus está conosco', 'Forma curta de Emanuel e um dos nomes mais tradicionais de Portugal, Espanha e América Latina.'],
+  ['Marco', 'Latim', 'Consagrado a Marte, guerreiro', 'É o nome do navegador Marco Polo e a forma usada em italiano, espanhol e inglês.'],
+  ['Dante', 'Latim', 'Firme, perseverante, duradouro', 'Dante Alighieri escreveu a Divina Comédia e deixou o nome conhecido no mundo todo.'],
+  ['Alex', 'Grego', 'Defensor, protetor dos homens', 'Serve de forma curta para Alexandre, Alejandro e Alexander ao mesmo tempo.'],
+  ['Leo', 'Latim', 'Leão', 'Vale como nome inteiro e como forma curta de Leonardo, Leonel e Leopoldo.'],
+  ['Max', 'Latim', 'O maior, o máximo', 'Funciona sozinho e também como forma curta de Maximiliano e Maximus.'],
+  ['Pablo', 'Latim', 'Pequeno, humilde', 'É a forma espanhola de Paulo, conhecida no mundo todo por Pablo Picasso.'],
+  ['Emiliano', 'Latim', 'Trabalhador, esforçado', 'Ficou famoso pelo revolucionário mexicano Emiliano Zapata.'],
+  ['Luciano', 'Latim', 'Aquele que traz a luz', 'Vem de lux, luz em latim, e ficou conhecido pelo tenor Luciano Pavarotti.'],
+  ['Camilo', 'Latim', 'Aquele que serve no altar, de nascimento nobre', 'É a forma masculina de Camila, comum em toda a América Latina.'],
+  ['Ernesto', 'Germânico', 'Sério, determinado, combativo', 'É a forma latina de Ernest, como o escritor Ernest Hemingway.'],
+  ['Orlando', 'Germânico', 'Glória da terra, famoso no país', 'É a forma italiana de Rolando e também uma cidade da Flórida.'],
+  ['Franco', 'Germânico', 'Livre, sincero, do povo franco', 'Tem a mesma raiz de "franco" no sentido de sincero, e de França.'],
+  ['Eric', 'Nórdico', 'Governante eterno, rei soberano', 'Veio dos vikings; em português também aparece com a grafia Erick.'],
+  ['Joel', 'Hebraico', 'O Senhor é Deus', 'É um dos profetas do Antigo Testamento.'],
+  ['Omar', 'Árabe/Hebraico', 'Aquele que tem vida longa, eloquente', 'Ficou conhecido pelo poeta persa Omar Khayyam e pelo ator Omar Sharif.'],
+  ['Gaspar', 'Persa', 'Guardião do tesouro', 'É um dos três Reis Magos, chamado assim nos três idiomas.'],
+  ['Leonel', 'Latim', 'Pequeno leão, leãozinho', 'É a forma portuguesa e espanhola de Lionel, como o jogador Lionel Messi.'],
+  ['Mauro', 'Latim', 'Mouro, natural da Mauritânia', 'Curto e igual nos três idiomas, é a raiz de Maurício e Maurice.'],
+  ['Aldo', 'Germânico', 'Velho, sábio, experiente', 'Curto e firme, é comum na Itália e na América Latina e fácil em inglês.'],
+  ['Alan', 'Celta/Bretão', 'Harmonioso, ou pequena rocha', 'Chegou à Inglaterra com os bretões e hoje serve aos três idiomas sem mudar nada.'],
+  ['Ramiro', 'Germânico', 'Conselheiro ilustre', 'Foi nome de vários reis das Astúrias e de Leão, na Espanha medieval.'],
+  ['Valentino', 'Latim', 'Forte, valente, saudável', 'É a forma italiana de Valentim e a masculina de Valentina.'],
+  ['Vito', 'Latim', 'Vida, cheio de vida', 'Vem de vita, vida em latim, e ficou conhecido por Vito Corleone em "O Poderoso Chefão".'],
+  ['Noel', 'Francês/Latim', 'Natal, dia do nascimento', 'Em português lembra o Papai Noel; em inglês e espanhol é nome próprio corrente.'],
+]
+
 function slugify(text: string) {
   return text
     .normalize('NFD')
@@ -669,6 +737,34 @@ const CROSSLINGUAL = new Set([
   'Roberto', 'Samuel', 'Silas', 'Simon', 'Thomas', 'Victor',
 ])
 
+// Nomes que, além de já estarem no baralho, passam no mesmo critério severo de
+// grafia idêntica nos três idiomas. Ficam com o selo trilíngue em vez do bilíngue —
+// sem isso, "Ana" apareceria como se não funcionasse em espanhol, o que é falso.
+const TRILINGUAL_JA_NO_BARALHO = [
+  // Femininos
+  'Adriana', 'Alana', 'Alexandra', 'Amanda', 'Ana', 'Anastasia', 'Andrea', 'Ariana',
+  'Ariel', 'Aurora', 'Bella', 'Bianca', 'Camila', 'Carla', 'Carolina', 'Clara', 'Cora',
+  'Cristina', 'Daniela', 'Elena', 'Elisa', 'Emma', 'Eva', 'Gabriela', 'Helena', 'Iris',
+  'Isabela', 'Isabella', 'Julia', 'Juliana', 'Karina', 'Lara', 'Laura', 'Lorena',
+  'Luciana', 'Luna', 'Manuela', 'Mariana', 'Marina', 'Marisa', 'Melissa', 'Milena',
+  'Nicole', 'Nina', 'Nora', 'Paloma', 'Paula', 'Rafaela', 'Regina', 'Renata', 'Rosa',
+  'Samantha', 'Sandra', 'Sara', 'Selena', 'Serena', 'Tatiana', 'Valentina', 'Vanessa',
+  'Vera', 'Victoria', 'Zara', 'Zoe',
+  // Masculinos
+  'Abel', 'Alberto', 'Bruno', 'Carlos', 'Christian', 'Daniel', 'Diego', 'Eduardo', 'Emanuel',
+  'Enzo', 'Fernando', 'Gabriel', 'Gael', 'Gilberto', 'Gustavo', 'Hugo', 'Ian', 'Igor',
+  'Isaac', 'Ismael', 'Jorge', 'Leonardo', 'Lorenzo', 'Lucas', 'Marcos', 'Mateo',
+  'Miguel', 'Milo', 'Nico', 'Noah', 'Otto', 'Pedro', 'Rafael', 'Renato', 'Ricardo', 'Roberto',
+  'Rodrigo', 'Salvador', 'Samuel', 'Silas',
+]
+
+// Uma fonte de verdade só: os nomes das listas novas entram automaticamente.
+const TRILINGUAL = new Set([
+  ...TRILINGUAL_JA_NO_BARALHO,
+  ...TRILINGUAL_FEMALE.map(([name]) => name),
+  ...TRILINGUAL_MALE.map(([name]) => name),
+])
+
 function build(list: Raw[], gender: Gender): NameEntry[] {
   return list.map(([name, origin, meaning, fact], index) => ({
     id: `${gender.toLowerCase()}-${slugify(name)}`,
@@ -678,7 +774,8 @@ function build(list: Raw[], gender: Gender): NameEntry[] {
     origin,
     meaning,
     fact,
-    ...(CROSSLINGUAL.has(name) ? { crosslingual: true } : {}),
+    ...(CROSSLINGUAL.has(name) || TRILINGUAL.has(name) ? { crosslingual: true } : {}),
+    ...(TRILINGUAL.has(name) ? { trilingual: true } : {}),
     ...(FAMOUS_BY_NAME[name] ? { famous: FAMOUS_BY_NAME[name] } : {}),
   }))
 }
@@ -848,7 +945,15 @@ const creativeNames = [...build(CREATIVE_FEMALE, 'F'), ...build(CREATIVE_MALE, '
 const usedIdsAfterCreative = new Set([...usedIdsAfterBicultural, ...dedupedBicultural.map((n) => n.id)])
 const dedupedCreative = creativeNames.filter((n) => !usedIdsAfterCreative.has(n.id))
 
-// Intercala nomes brasileiros, internacionais, biculturais e criativos (mantendo a ordem
+// --- Nomes trilingues ---
+// Entram como a última lista a ser deduplicada: qualquer nome que já exista no
+// baralho continua com o card que já tinha (e ganha o selo trilíngue pelo TRILINGUAL),
+// então o que sobra aqui é só o que é realmente novo.
+const trilingualNames = [...build(TRILINGUAL_FEMALE, 'F'), ...build(TRILINGUAL_MALE, 'M')]
+const usedIdsAfterTrilingual = new Set([...usedIdsAfterCreative, ...dedupedCreative.map((n) => n.id)])
+const dedupedTrilingual = trilingualNames.filter((n) => !usedIdsAfterTrilingual.has(n.id))
+
+// Intercala nomes brasileiros, internacionais, biculturais, criativos e trilingues (mantendo a ordem
 // relativa de cada lista), para que os nomes novos apareçam ao longo de todo o baralho, não
 // só no final. Também renumera o rank de forma sequencial e única por gênero, já que cada
 // lista de origem numerava a partir de 1 independentemente das outras.
@@ -873,4 +978,5 @@ export const BASE_NAMES: NameEntry[] = interleaveAndRenumber(
   dedupedInternational,
   dedupedBicultural,
   dedupedCreative,
+  dedupedTrilingual,
 )

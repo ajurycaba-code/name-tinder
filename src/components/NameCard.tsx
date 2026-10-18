@@ -21,7 +21,11 @@ export function NameCard({ entry, dragX = 0, dragY = 0, likeStamp = 'MATCH?' }: 
   const maybeOpacity = vertical ? Math.min(Math.max(-dragY / 90, 0), 1) : 0
 
   return (
-    <div className={`name-card ${entry.crosslingual ? 'name-card-cross' : ''}`}>
+    <div
+      className={`name-card ${
+        entry.trilingual ? 'name-card-tri' : entry.crosslingual ? 'name-card-cross' : ''
+      }`}
+    >
       <div className="name-card-stamp name-card-stamp-like" style={{ opacity: likeOpacity }}>
         {likeStamp}
       </div>
@@ -37,9 +41,11 @@ export function NameCard({ entry, dragX = 0, dragY = 0, likeStamp = 'MATCH?' }: 
         {entry.custom ? ' · sugerido' : ` · #${entry.rank}`}
       </div>
 
-      {entry.crosslingual && (
+      {entry.trilingual ? (
+        <div className="name-card-tri-badge">🇧🇷 🇪🇸 🇺🇸 funciona nos três idiomas</div>
+      ) : entry.crosslingual ? (
         <div className="name-card-cross-badge">🇧🇷 🇺🇸 funciona nos dois idiomas</div>
-      )}
+      ) : null}
       {entry.bicultural && <div className="name-card-bicultural">🇧🇷 + 🇺🇸 nome bicultural</div>}
       {entry.creative && <div className="name-card-creative">✨ nome exclusivo da família</div>}
       {entry.suggestedBy && <div className="name-card-suggested">💌 sugerido por {entry.suggestedBy}</div>}
@@ -58,6 +64,17 @@ export function NameCard({ entry, dragX = 0, dragY = 0, likeStamp = 'MATCH?' }: 
           >
             🔊 português
           </button>
+          {entry.trilingual && (
+            <button
+              type="button"
+              className="speak-btn"
+              onPointerDown={swallow}
+              onClick={() => speakName(entry.name, 'es-US')}
+              aria-label={`Ouvir ${entry.name} em espanhol`}
+            >
+              🔊 espanhol
+            </button>
+          )}
           <button
             type="button"
             className="speak-btn"

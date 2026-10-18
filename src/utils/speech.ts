@@ -1,21 +1,37 @@
 // Pronúncia dos nomes usando a síntese de voz do próprio navegador
 // (Web Speech API). Não depende de nenhum serviço externo.
 
-export type SpeechLang = 'pt-BR' | 'en-US'
+export type SpeechLang = 'pt-BR' | 'en-US' | 'es-US'
+
+// Ordem de preferência de voz por idioma, da melhor para a aceitável. Cada sistema
+// instala um conjunto diferente de vozes, então pedir só um código exato falha com
+// frequência. No espanhol, as variantes da América Latina vêm antes da europeia:
+// é o espanhol que a criança ouviria no dia a dia daqui.
+const PREFERENCIA_DE_VOZ: Record<SpeechLang, string[]> = {
+  'pt-BR': ['pt-br', 'pt-pt'],
+  'en-US': ['en-us', 'en-gb'],
+  'es-US': ['es-us', 'es-mx', 'es-419', 'es-es'],
+}
 
 export function speechSupported(): boolean {
   return typeof window !== 'undefined' && 'speechSynthesis' in window
 }
 
+function tag(voice: SpeechSynthesisVoice): string {
+  return voice.lang.replace('_', '-').toLowerCase()
+}
+
 function pickVoice(lang: SpeechLang): SpeechSynthesisVoice | undefined {
-  const wanted = lang.toLowerCase()
   const voices = window.speechSynthesis.getVoices()
-  return (
-    // Voz exatamente do idioma pedido (pt-BR, en-US)
-    voices.find((voice) => voice.lang.replace('_', '-').toLowerCase() === wanted) ??
-    // Senão, qualquer voz do mesmo idioma (pt-PT serve para português)
-    voices.find((voice) => voice.lang.replace('_', '-').toLowerCase().startsWith(wanted.slice(0, 2)))
-  )
+
+  for (const desejada of PREFERENCIA_DE_VOZ[lang]) {
+    const exata = voices.find((voice) => tag(voice) === desejada)
+    if (exata) return exata
+  }
+
+  // Última tentativa: qualquer voz do mesmo idioma, qualquer que seja a região.
+  const prefixo = lang.slice(0, 2).toLowerCase()
+  return voices.find((voice) => tag(voice).startsWith(prefixo))
 }
 
 export function speakName(name: string, lang: SpeechLang) {

@@ -282,6 +282,45 @@ textarea {
   );
 }
 
+/* Card trilingue: faixa com as cores das tres bandeiras — Brasil, Espanha, EUA */
+.name-card-tri::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(
+    90deg,
+    #009c3b 0%,
+    #009c3b 15%,
+    #ffdf00 15%,
+    #ffdf00 33%,
+    #aa151b 33%,
+    #aa151b 45%,
+    #f1bf00 45%,
+    #f1bf00 55%,
+    #aa151b 55%,
+    #aa151b 67%,
+    #3c3b6e 67%,
+    #3c3b6e 82%,
+    #b22234 82%,
+    #b22234 100%
+  );
+}
+
+.name-card-tri-badge {
+  align-self: flex-start;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  margin: -8px 0 16px;
+  background: linear-gradient(90deg, #e8f7ee, #fdf6e3 55%, #eef0ff);
+  color: #2f6b46;
+  border: 1px solid #e2e4c9;
+}
+
 .name-card-cross-badge {
   align-self: flex-start;
   padding: 5px 12px;
